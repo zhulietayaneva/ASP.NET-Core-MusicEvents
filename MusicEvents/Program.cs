@@ -1,18 +1,25 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MusicEvents.Data;
+using MusicEvents.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
+builder.Services
+                .AddDbContext<MusicEventsDbContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services
+                .AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services
+                .AddDefaultIdentity<IdentityUser>(options => options.Password.RequireDigit=false)
+                .AddEntityFrameworkStores<MusicEventsDbContext>();
+
+builder.Services
+                .AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -28,13 +35,15 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
 
-app.UseRouting();
+app.PrepareDatabase();
+app
+    .UseHttpsRedirection()
+    .UseStaticFiles()
+    .UseRouting()
+    .UseAuthentication()
+    .UseAuthorization();
 
-app.UseAuthentication();
-app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
