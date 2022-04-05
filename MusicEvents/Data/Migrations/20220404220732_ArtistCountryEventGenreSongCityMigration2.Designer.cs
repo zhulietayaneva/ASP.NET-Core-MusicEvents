@@ -12,8 +12,8 @@ using MusicEvents.Data;
 namespace MusicEvents.Data.Migrations
 {
     [DbContext(typeof(MusicEventsDbContext))]
-    [Migration("20220324132324_ArtistCountryEventGenreSongMigration1")]
-    partial class ArtistCountryEventGenreSongMigration1
+    [Migration("20220404220732_ArtistCountryEventGenreSongCityMigration2")]
+    partial class ArtistCountryEventGenreSongCityMigration2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -294,6 +294,29 @@ namespace MusicEvents.Data.Migrations
                     b.ToTable("Artists");
                 });
 
+            modelBuilder.Entity("MusicEvents.Data.Models.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CityName")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("Cities");
+                });
+
             modelBuilder.Entity("MusicEvents.Data.Models.Country", b =>
                 {
                     b.Property<int>("Id")
@@ -318,6 +341,9 @@ namespace MusicEvents.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
@@ -344,6 +370,8 @@ namespace MusicEvents.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CityId");
 
                     b.HasIndex("CountryId");
 
@@ -493,13 +521,32 @@ namespace MusicEvents.Data.Migrations
                     b.Navigation("Genre");
                 });
 
+            modelBuilder.Entity("MusicEvents.Data.Models.City", b =>
+                {
+                    b.HasOne("MusicEvents.Data.Models.Country", "Country")
+                        .WithMany("Cities")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+                });
+
             modelBuilder.Entity("MusicEvents.Data.Models.Event", b =>
                 {
+                    b.HasOne("MusicEvents.Data.Models.City", "City")
+                        .WithMany("Events")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("MusicEvents.Data.Models.Country", "Country")
                         .WithMany("Events")
                         .HasForeignKey("CountryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("City");
 
                     b.Navigation("Country");
                 });
@@ -515,9 +562,16 @@ namespace MusicEvents.Data.Migrations
                     b.Navigation("Genre");
                 });
 
+            modelBuilder.Entity("MusicEvents.Data.Models.City", b =>
+                {
+                    b.Navigation("Events");
+                });
+
             modelBuilder.Entity("MusicEvents.Data.Models.Country", b =>
                 {
                     b.Navigation("Artists");
+
+                    b.Navigation("Cities");
 
                     b.Navigation("Events");
                 });

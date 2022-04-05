@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MusicEvents.Data.Migrations
 {
-    public partial class ArtistCountryEventGenreSongMigration1 : Migration
+    public partial class ArtistCountryEventGenreSongCityMigration2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -36,23 +36,19 @@ namespace MusicEvents.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Events",
+                name: "Cities",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EventName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    Venue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    ImgURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CountryId = table.Column<int>(type: "int", nullable: false),
-                    Time = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CityName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Events", x => x.Id);
+                    table.PrimaryKey("PK_Cities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Events_Countries_CountryId",
+                        name: "FK_Cities_Countries_CountryId",
                         column: x => x.CountryId,
                         principalTable: "Countries",
                         principalColumn: "Id",
@@ -111,27 +107,34 @@ namespace MusicEvents.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArtistEvent",
+                name: "Events",
                 columns: table => new
                 {
-                    ArtistsId = table.Column<int>(type: "int", nullable: false),
-                    EventsId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EventName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    Venue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ImgURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    Time = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArtistEvent", x => new { x.ArtistsId, x.EventsId });
+                    table.PrimaryKey("PK_Events", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ArtistEvent_Artists_ArtistsId",
-                        column: x => x.ArtistsId,
-                        principalTable: "Artists",
+                        name: "FK_Events_Cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "Cities",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_ArtistEvent_Events_EventsId",
-                        column: x => x.EventsId,
-                        principalTable: "Events",
+                        name: "FK_Events_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -158,6 +161,30 @@ namespace MusicEvents.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ArtistEvent",
+                columns: table => new
+                {
+                    ArtistsId = table.Column<int>(type: "int", nullable: false),
+                    EventsId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArtistEvent", x => new { x.ArtistsId, x.EventsId });
+                    table.ForeignKey(
+                        name: "FK_ArtistEvent_Artists_ArtistsId",
+                        column: x => x.ArtistsId,
+                        principalTable: "Artists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ArtistEvent_Events_EventsId",
+                        column: x => x.EventsId,
+                        principalTable: "Events",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ArtistEvent_EventsId",
                 table: "ArtistEvent",
@@ -177,6 +204,16 @@ namespace MusicEvents.Data.Migrations
                 name: "IX_ArtistSong_SongsId",
                 table: "ArtistSong",
                 column: "SongsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cities_CountryId",
+                table: "Cities",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Events_CityId",
+                table: "Events",
+                column: "CityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_CountryId",
@@ -207,10 +244,13 @@ namespace MusicEvents.Data.Migrations
                 name: "Songs");
 
             migrationBuilder.DropTable(
-                name: "Countries");
+                name: "Cities");
 
             migrationBuilder.DropTable(
                 name: "Genres");
+
+            migrationBuilder.DropTable(
+                name: "Countries");
         }
     }
 }

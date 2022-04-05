@@ -2,16 +2,14 @@
 
 namespace MusicEvents.Data.Models
 {
-    public class Country
+    public class City
     {
         public int Id { get; set; }
         [Required]
-        public string CountryName { get; set; }
-
-        public ICollection<City> Cities { get; set; } = new List<City>();
-
+        [MaxLength(60)]
+        public string CityName { get; set; }
+        public Country Country { get; set; }
+        public int CountryId { get; set; }
         public ICollection<Event> Events { get; set; } = new List<Event>();
-
-        public ICollection<Artist> Artists { get; set; } = new List<Artist>();
     }
 }

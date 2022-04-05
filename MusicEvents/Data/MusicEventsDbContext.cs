@@ -19,9 +19,9 @@ namespace MusicEvents.Data
         public DbSet<Event> Events { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Song> Songs { get; set; }
-
-       
-
+        public DbSet<City> Cities { get; set; }
+               
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Artist>()
@@ -62,6 +62,11 @@ namespace MusicEvents.Data
                                     .HasForeignKey(e => e.CountryId)
                                     .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Event>()
+                                   .HasOne(e => e.City)
+                                   .WithMany(c => c.Events)
+                                   .OnDelete(DeleteBehavior.Restrict);
+
 
             //---------------------------------------------------
             //---------------------------------------------------
@@ -95,7 +100,10 @@ namespace MusicEvents.Data
 
 
 
-
+            builder.Entity<Country>()
+                                     .HasMany(c => c.Cities)
+                                     .WithOne(c=>c.Country)
+                                     .OnDelete(DeleteBehavior.Restrict);
 
 
 
@@ -117,6 +125,20 @@ namespace MusicEvents.Data
             //---------------------------------------------------
             //---------------------------------------------------
 
+            builder.Entity<City>()
+                                  .HasMany(c => c.Events)
+                                  .WithOne(c => c.City)
+                                  .OnDelete(DeleteBehavior.Restrict);
+
+
+            builder.Entity<City>()
+                                  .HasOne(c => c.Country)
+                                  .WithMany(c => c.Cities)
+                                  .OnDelete(DeleteBehavior.Restrict);
+
+
+            //---------------------------------------------------
+            //---------------------------------------------------
 
             base.OnModelCreating(builder);
         }
