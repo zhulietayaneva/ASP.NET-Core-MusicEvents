@@ -20,6 +20,8 @@ namespace MusicEvents.Models.Events
         public Country Country { get; set; }
         public City City { get; set; }
         public DateTime Time { get; set; }
+        public ICollection<string> Countries { get; set; } = new List<string>();     
+        public ICollection<string> Cities { get; set; } = new List<string>();
 
     }
 }

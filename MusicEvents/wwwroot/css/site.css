@@ -22,3 +22,8 @@ img.logo{
     height:30px;
     width:auto; 
 }
+
+.heading-margin {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
