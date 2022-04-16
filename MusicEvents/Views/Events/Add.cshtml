@@ -11,33 +11,41 @@
               <div class="col-md-6">
                 <label asp-for="EventName" class="form-label">Event Name</label>
                 <input asp-for="EventName" class="form-control" placeholder="Enter name here">
+                <span asp-validation-for="EventName" class="small text-danger"></span>
+
               </div>
               
               <div class="col-md-6">
                 <label asp-for="Venue" class="form-label">Venue</label>
                 <input asp-for="Venue" class="form-control" placeholder="Enter venue here">
+                <span asp-validation-for="Venue" class="small text-danger"></span>
+
               </div>
               
               <div class="col-md-6">
                 <label asp-for="ImgURL" class="form-label">Image URL</label>
                 <input asp-for="ImgURL" class="form-control" placeholder="Enter image URL here">
+                <span asp-validation-for="ImgURL" class="small text-danger"></span>
+
               </div>
             
               <div class="col-md-6">
                 <label asp-for="Description" class="form-label">Event Name</label>
-                <textarea asp-for="Description" class="form-control" rows="5" placeholder="Enter name here"></textarea>
+                <textarea asp-for="Description" class="form-control" rows="5" placeholder="Enter description here"></textarea>
+                <span asp-validation-for="Description" class="small text-danger"></span>
+
               </div>
 
-              <div class="col-md-4">
-                <label asp-for="Country" class="form-label">Country</label>
-               <select asp-for="Country" class="form-control">
+            @*  <div class="col-md-4">
+                <label asp-for="CountryId" class="form-label">Country</label>
+               <select asp-for="CountryId" class="form-control">
                    @foreach (var country in Model.Countries)
                    {
                        <option value="@country">@country</option>
                    }
 
                </select>
-            </div>    
+            </div>    *@
             
                @*<div class="col-md-4">
                 <label asp-for="City" class="form-label">City</label>
@@ -53,26 +61,55 @@
 
               <div class="col-md-6">
                 <label asp-for="Time" class="form-label">Choose Date</label>
-                <input asp-for="Time" class="form-control" value=@DateTime.Now>
+                <input asp-for="Time" class="form-control" value="@DateTime.Today">
+                <span asp-validation-for="Time" class="small text-danger"></span>
+
               </div>
 
-              <div class="col-md-2">
-                <label for="inputZip" class="form-label">Zip</label>
-                <input type="text" class="form-control" id="inputZip">
-              </div>
-              <div class="col-12">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="gridCheck">
-                  <label class="form-check-label" for="gridCheck">
-                    Check me out
-                  </label>
-                </div>
-              </div>
+              
+
+            <button type='button' onclick="addArtist()"  id='btn1'>submit</button> 
+
+            
+          <div class="col-12" id="loadPartial" >
+
+           </div>
+             
               <div class="col-12">
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
             </form>
+              
          </div>
                                
      </div>
  </div>
+ @section Scripts{
+<script type="text/javascript">    
+        
+    window.onclick = e => {
+    console.dir(e.target);  // use this in chrome
+    console.log(e.target);  // use this in firefox - click on tag name to view 
+} 
+
+            var myDiv = document.getElementById("loadPartial");
+            var btn = document.getElementById("btn1");
+
+        function addArtist(e){
+            
+            var newDiv = document.createElement("div");
+            newDiv.style="padding-bottom: 10px;padding-top: 10px;";
+            newDiv.insertAdjacentHTML('beforeend',$(newDiv).load('@Url.Action("GetPartialArtists", "Events")')) ;
+            myDiv.append(newDiv);
+         
+        }
+
+        function remove(ev){
+            alert("aaaa");
+            var divToRemove = ev.target.parentNode.parentNode;
+            myDiv.removeChild(divToRemove);
+        }
+    
+ </script> 
+ }
+

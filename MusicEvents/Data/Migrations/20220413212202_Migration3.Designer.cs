@@ -12,8 +12,8 @@ using MusicEvents.Data;
 namespace MusicEvents.Data.Migrations
 {
     [DbContext(typeof(MusicEventsDbContext))]
-    [Migration("20220404220732_ArtistCountryEventGenreSongCityMigration2")]
-    partial class ArtistCountryEventGenreSongCityMigration2
+    [Migration("20220413212202_Migration3")]
+    partial class Migration3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -269,11 +269,13 @@ namespace MusicEvents.Data.Migrations
 
                     b.Property<string>("ArtistName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Biography")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
@@ -327,7 +329,8 @@ namespace MusicEvents.Data.Migrations
 
                     b.Property<string>("CountryName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -366,8 +369,8 @@ namespace MusicEvents.Data.Migrations
 
                     b.Property<string>("Venue")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.HasKey("Id");
 
@@ -388,7 +391,8 @@ namespace MusicEvents.Data.Migrations
 
                     b.Property<string>("GenreName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
 
                     b.HasKey("Id");
 
@@ -408,7 +412,8 @@ namespace MusicEvents.Data.Migrations
 
                     b.Property<string>("SongName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(60)
+                        .HasColumnType("nvarchar(60)");
 
                     b.Property<string>("SongURL")
                         .IsRequired()

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static MusicEvents.Data.DataConstants;
 
 namespace MusicEvents.Data.Models
 {
@@ -6,15 +7,19 @@ namespace MusicEvents.Data.Models
     {
         public int Id { get; set; }
         [Required]
+        [MaxLength(ArtistNameMaxLenght)]
         public string ArtistName { get; set; }
-        [Required]
+        
         public Genre Genre { get; set; }
-
-        public int GenreId { get; set; }
+        public int GenreId { get; set; }    
+        
         public int Age { get; set; }
-        public string Biography { get; set; }
-        [Url]
+
+        [MaxLength(ArtistBioMaxLenght)]
+        public string? Biography { get; set; }
+        
         [Required]
+        [Url]
         public string ImageURL { get; set; }
 
         public Country Country { get; set; }

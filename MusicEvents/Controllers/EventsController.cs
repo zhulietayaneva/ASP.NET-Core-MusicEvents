@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MusicEvents.Data;
+using MusicEvents.Data.Models;
 using MusicEvents.Models.Events;
 using System.Globalization;
 
@@ -14,15 +15,44 @@ namespace MusicEvents.Controllers
             this.data = data;
         }
 
-        public IActionResult Add() => View(new EventAddFormModel { Countries = CountryList(),
-            
+        public IActionResult Add() => View(new EventAddFormModel
+        {
+            Countries = CountryList(),
+
         });
 
 
         [HttpPost]
         public IActionResult Add(EventAddFormModel model)
         {
-            return View();
+            //if (!this.data.Countries.Any(c => c.Id == model.CountryId))
+            //{
+            //    this.ModelState.AddModelError(nameof(model.CountryId), "Category");
+
+            //}
+
+            if (!ModelState.IsValid)
+            {
+                model.Countries = CountryList();
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                return View(model);
+
+            }
+
+            var curr = new Event
+            {
+                EventName = model.EventName,
+                Venue = model.Venue,
+                Description = model.Description==null?"":model.Description,
+                ImgURL = model.ImgURL,
+
+            };
+
+
+           // this.data.Events.Add(curr);
+           // this.data.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
         }
 
         public static List<string> CountryList()
@@ -47,5 +77,11 @@ namespace MusicEvents.Controllers
             return Culturelist;
         }
 
-    }      
+        public IActionResult GetPartialArtists()
+        {
+            
+
+            return PartialView("_ArtistsPartial");
+        }
+    }
 }

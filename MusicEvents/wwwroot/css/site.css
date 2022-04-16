@@ -14,13 +14,16 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-image: url('../Assets/Background/bg.jpg');
 }
 
-img.logo{
-
-    height:30px;
-    width:auto; 
+img.logo {
+    height: 250px;
+    margin: -90px -120px -89px -100px;
 }
 
 .heading-margin {

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static MusicEvents.Data.DataConstants;
 
 namespace MusicEvents.Data.Models
 {
@@ -6,7 +7,7 @@ namespace MusicEvents.Data.Models
     {
         public int Id { get; set; }
         [Required]
-        [MaxLength(60)]
+        [MaxLength(CityNameMaxLenght)]
         public string CityName { get; set; }
         public Country Country { get; set; }
         public int CountryId { get; set; }

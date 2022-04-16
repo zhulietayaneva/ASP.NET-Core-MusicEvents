@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MusicEvents.Data;
+using MusicEvents.Data.Models;
+using Newtonsoft.Json;
 
 namespace MusicEvents.Infrastructure
 {
@@ -18,5 +20,13 @@ namespace MusicEvents.Infrastructure
             return app;
         }
 
+        private static void SeedCountriesAndCities(MusicEventsDbContext data)
+        {
+            string inputJson = File.ReadAllText("../../../Data/countires.json");
+
+            var countries = JsonConvert.DeserializeObject<IEnumerable<Country>>(inputJson);
+
+
+        }
     }
 }

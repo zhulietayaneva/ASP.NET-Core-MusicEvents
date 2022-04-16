@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MusicEvents.Data.Migrations
 {
-    public partial class ArtistCountryEventGenreSongCityMigration2 : Migration
+    public partial class Migration3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,7 @@ namespace MusicEvents.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CountryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CountryName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -28,7 +28,7 @@ namespace MusicEvents.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GenreName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    GenreName = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,10 +61,10 @@ namespace MusicEvents.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ArtistName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ArtistName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     GenreId = table.Column<int>(type: "int", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    Biography = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Biography = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -91,7 +91,7 @@ namespace MusicEvents.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SongName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SongName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     GenreId = table.Column<int>(type: "int", nullable: false),
                     SongURL = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -113,7 +113,7 @@ namespace MusicEvents.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EventName = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    Venue = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Venue = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     ImgURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false),
