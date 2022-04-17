@@ -12,8 +12,8 @@ using MusicEvents.Data;
 namespace MusicEvents.Data.Migrations
 {
     [DbContext(typeof(MusicEventsDbContext))]
-    [Migration("20220413212202_Migration3")]
-    partial class Migration3
+    [Migration("20220416194223_migration5")]
+    partial class migration5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -273,7 +273,6 @@ namespace MusicEvents.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Biography")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
@@ -306,8 +305,8 @@ namespace MusicEvents.Data.Migrations
 
                     b.Property<string>("CityName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");

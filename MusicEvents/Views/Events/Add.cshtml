@@ -36,34 +36,23 @@
 
               </div>
 
-            @*  <div class="col-md-4">
-                <label asp-for="CountryId" class="form-label">Country</label>
-               <select asp-for="CountryId" class="form-control">
-                   @foreach (var country in Model.Countries)
-                   {
-                       <option value="@country">@country</option>
-                   }
-
-               </select>
-            </div>    *@
+              <div class="col-md-4">
+               <label asp-for="CountryId" class="form-label">Country</label>
+               <select asp-for="CountryId" id="CountryId" name="CountryId" class="form-control" asp-items="@(new SelectList(@Model.Countries, "Id", "CountryName"))"></select>
+               
+              </div>    
             
-               @*<div class="col-md-4">
-                <label asp-for="City" class="form-label">City</label>
-               <select asp-for="City" class="form-control">
-                   @foreach (var city in Model.Country.Cities)
-                   {
-                       <option>@city</option>
-                   }
-
-               </select>
-              </div>*@
+              <div class="col-md-4">
+               <label asp-for="CityId" class="form-label">City</label>
+               <select asp-for="CityId" id="CityId" name="CityId" class="form-control" asp-items="@(new SelectList(string.Empty, "CityId", "CityName"))"></select>
+              </div>
 
 
               <div class="col-md-6">
                 <label asp-for="Time" class="form-label">Choose Date</label>
                 <input asp-for="Time" class="form-control" value="@DateTime.Today">
                 <span asp-validation-for="Time" class="small text-danger"></span>
-
+              
               </div>
 
               
@@ -84,32 +73,69 @@
                                
      </div>
  </div>
- @section Scripts{
+@section Scripts{
+
 <script type="text/javascript">    
         
-    window.onclick = e => {
-    console.dir(e.target);  // use this in chrome
-    console.log(e.target);  // use this in firefox - click on tag name to view 
-} 
+         $(document).ready(function () {           
+           var items = "<option value='0'>Select</option>";
+           $("#CityId").html(items);                               
+        });
+</script>
 
-            var myDiv = document.getElementById("loadPartial");
-            var btn = document.getElementById("btn1");
+<script type="text/javascript"> 
+        $(document).ready(function () {
 
-        function addArtist(e){
+          $("#CountryId").change(function () {
+
+             var url= '@Url.Content("~/")'+ "Events/GetCities";
             
+             var ddlsource = "#CountryId";
+
+              $.getJSON(url, { CountryId: $(ddlsource).val() }, function (data) {
+
+                var items = '';
+                $("#CityId").empty();
+                $.each(data, function (i, city) {
+
+                    items += "<option value='" + city.value + "'>" + city.text + "</option>";
+                });
+                $('#CityId').html(items);
+        }); 
+          }); 
+             });
+
+</script> 
+
+
+<script type="text/javascript">
+
+      
+        var myDiv = document.getElementById("loadPartial");
+        var btn = document.getElementById("btn1");
+
+        function addArtist(e){         
             var newDiv = document.createElement("div");
             newDiv.style="padding-bottom: 10px;padding-top: 10px;";
             newDiv.insertAdjacentHTML('beforeend',$(newDiv).load('@Url.Action("GetPartialArtists", "Events")')) ;
-            myDiv.append(newDiv);
-         
+            myDiv.append(newDiv);         
         }
+       
+</script>
 
-        function remove(ev){
+@*<script type="text/javascript">
+    
+     function remove(ev){
+         alert("sgsge");
+        $(ev.target).parent().parent().remove();
+
+           function remove(ev){
             alert("aaaa");
             var divToRemove = ev.target.parentNode.parentNode;
             myDiv.removeChild(divToRemove);
         }
-    
- </script> 
+    }
+</script>*@
+
  }
 

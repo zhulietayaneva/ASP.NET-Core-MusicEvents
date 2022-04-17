@@ -32,7 +32,7 @@
 
         //-------------CITY-----------------
 
-        public const int CityNameMaxLenght = 60;
+        public const int CityNameMaxLenght = 120;
 
         
         

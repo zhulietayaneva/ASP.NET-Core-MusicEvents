@@ -5,22 +5,22 @@
     <input type="text" asp-for="ArtistName" class="form-control" placeholder="Artist name">
   </div>
 
-
-
   <div class="col">
-      <button type="button" class="btn btn-danger" onclick="remove()" id="btnRemove">-</button>
+      <button type="button" class="btn btn-danger" onclick="{(ev) => remove(ev)}" id="btnRemove">-</button>
   </div>
-
-
 </div>
 
-@section Scripts {
- @*   <script>
+
+@section Scripts{
+    <script type="text/javascript">
     
-    // function remove(ev){
-    //     alert("sgsge");
-    //    $(ev.target).parent().parent().remove();
-    //}
-    //</script>*@
+    
+           function remove(ev){
+            alert("aaaa");
+            var divToRemove = ev.target.parentNode.parentNode;
+            myDiv.removeChild(divToRemove);
+        }
+    
+</script>
+}  
    
-}

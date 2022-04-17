@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Models.Events;
@@ -9,17 +10,25 @@ namespace MusicEvents.Controllers
     public class EventsController : Controller
     {
         private readonly MusicEventsDbContext data;
+        
 
         public EventsController(MusicEventsDbContext data)
         {
             this.data = data;
         }
 
-        public IActionResult Add() => View(new EventAddFormModel
-        {
-            Countries = CountryList(),
+        public IActionResult Add() {
 
-        });
+          
+
+            var res = new EventAddFormModel
+            {
+                Countries = data.Countries.ToList(),
+                Time = DateTime.UtcNow.Date,
+
+            };
+            return View(res);
+        } 
 
 
         [HttpPost]
@@ -33,7 +42,9 @@ namespace MusicEvents.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.Countries = CountryList();
+                model.Countries = data.Countries.ToList();                
+                model.Cities = data.Cities.ToList();
+
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
                 return View(model);
 
@@ -43,8 +54,9 @@ namespace MusicEvents.Controllers
             {
                 EventName = model.EventName,
                 Venue = model.Venue,
-                Description = model.Description==null?"":model.Description,
+                Description = model.Description == null ? "" : model.Description,
                 ImgURL = model.ImgURL,
+                Time = model.Time
 
             };
 
@@ -52,29 +64,39 @@ namespace MusicEvents.Controllers
            // this.data.Events.Add(curr);
            // this.data.SaveChanges();
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(nameof(All));
         }
 
-        public static List<string> CountryList()
+
+
+        public IActionResult All()
         {
-            //Creating list
-            List<string> Culturelist = new List<string>();
-            //getting the specific CultureInfo from CultureInfo class
-            CultureInfo[] getCultureInfo = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-            foreach (CultureInfo getCulture in getCultureInfo)
-            {
-                //creating the object of RegionInfo class
-                RegionInfo GetRegionInfo = new RegionInfo(getCulture.LCID);
-                //adding each county Name into the arraylist
-                if (!(Culturelist.Contains(GetRegionInfo.EnglishName)))
-                {
-                    Culturelist.Add(GetRegionInfo.EnglishName);
-                }
-            }
-            // sorting array by using sort method to get countries in order
-            Culturelist.Sort();
-            //returning country list
-            return Culturelist;
+             var events = this.data
+             .Events
+             .OrderByDescending(e => e.Id)
+             .Select(e => new AllEventsFormModel
+             {
+                 Id = e.Id,
+                 CityName=e.City.CityName,
+                 CountryName=e.Country.CountryName,
+                 Artists=String.Join(", ",e.Artists.Select(a=>a.ArtistName)),
+                 Description=e.Description,
+                 EventName=e.EventName,
+                 ImgURL=e.ImgURL,
+                 Time = e.Time,
+                 Venue=e.Venue,
+                 
+
+             })
+             .ToList();
+
+            return View(events);
+        }
+
+        public IActionResult Details()
+        {
+            return View();
+
         }
 
         public IActionResult GetPartialArtists()
@@ -83,5 +105,20 @@ namespace MusicEvents.Controllers
 
             return PartialView("_ArtistsPartial");
         }
+
+
+        public JsonResult GetCities(int CountryId)
+        {
+         
+            var res=data.Cities.Where(c => c.CountryId == CountryId).ToList();
+            var t= Json(new SelectList(res,"Id","CityName"));
+            return t;
+        }
+
+        public JsonResult GetCountries()
+        {
+            return Json(new SelectList(data.Countries.ToList(), "Id", "CountryName"));
+        }
+
     }
 }

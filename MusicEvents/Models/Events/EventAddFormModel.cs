@@ -30,8 +30,8 @@ namespace MusicEvents.Models.Events
         [Required(ErrorMessage = "Event date and time are required")]
         [DateLessThanOrEqualToToday]
         public DateTime Time { get; set; }
-        public ICollection<string> Countries { get; set; } = new List<string>();     
-        public ICollection<string> Cities { get; set; } = new List<string>();
+        public ICollection<Country> Countries { get; set; } = new List<Country>();     
+        public ICollection<City> Cities { get; set; } = new List<City>();
 
         public ICollection<Artist> Artists { get; set; } = new List<Artist>();
 

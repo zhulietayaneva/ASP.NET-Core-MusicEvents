@@ -271,7 +271,6 @@ namespace MusicEvents.Data.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Biography")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
@@ -304,8 +303,8 @@ namespace MusicEvents.Data.Migrations
 
                     b.Property<string>("CityName")
                         .IsRequired()
-                        .HasMaxLength(60)
-                        .HasColumnType("nvarchar(60)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");
