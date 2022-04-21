@@ -15,7 +15,7 @@ builder.Services
                 .AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services
-                .AddDefaultIdentity<IdentityUser>(options => options.Password.RequireDigit=false)
+                .AddDefaultIdentity<IdentityUser>(options => { options.Password.RequireDigit = false; options.Password.RequireNonAlphanumeric = false; options.Password.RequireUppercase=false; options.Password.RequireLowercase = false; })
                 .AddEntityFrameworkStores<MusicEventsDbContext>();
 
 builder.Services

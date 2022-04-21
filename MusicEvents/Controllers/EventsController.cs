@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MusicEvents.Data;
 using MusicEvents.Data.Models;
+using MusicEvents.Infrastructure;
 using MusicEvents.Models.Artists;
 using MusicEvents.Models.Events;
-using System.Globalization;
-using System.Linq;
 
 namespace MusicEvents.Controllers
 {
@@ -19,9 +19,17 @@ namespace MusicEvents.Controllers
             this.data = data;
         }
 
-        public IActionResult Add() {
+        [Authorize]
+        public IActionResult Add()
+        {
 
-          
+            if (!this.UserIsOrganizer())
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
+                
+
+
 
             var res = new AddEventFormModel
             {
@@ -34,8 +42,14 @@ namespace MusicEvents.Controllers
 
 
         [HttpPost]
+        [Authorize]
         public IActionResult Add(AddEventFormModel model)
         {
+            if (!this.UserIsOrganizer())
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
+
             if (!this.data.Cities.Any(c => c.Id == model.CityId) || !this.data.Countries.Any(c => c.Id == model.CountryId))
             {
                 this.ModelState.AddModelError(nameof(model.CountryId), "Select a valid place");
@@ -100,6 +114,12 @@ namespace MusicEvents.Controllers
             return RedirectToAction(nameof(All));
         }
 
+         private bool UserIsOrganizer()
+                =>this.data //!
+                .Organizers
+                .Any(d => d.UserId==
+                this.User.GetId());
+              
 
 
         public IActionResult All()
@@ -125,7 +145,7 @@ namespace MusicEvents.Controllers
 
             return View(events);
         }
-
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var ev = this.data.Events.Where(e => e.Id == id).FirstOrDefault();

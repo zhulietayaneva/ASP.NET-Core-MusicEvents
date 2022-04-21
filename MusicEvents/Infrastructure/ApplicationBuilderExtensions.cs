@@ -79,7 +79,7 @@ namespace MusicEvents.Infrastructure
                 cities.Clear(); 
                 foreach (var city in country.Cities)
                 {
-                    city.CountryId = country.Id;
+                    
                     
                     cities.Add(city);
                 }

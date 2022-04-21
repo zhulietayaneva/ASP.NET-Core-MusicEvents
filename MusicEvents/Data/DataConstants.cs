@@ -46,5 +46,11 @@
         public const int SongNameMaxLenght = 60;
 
 
+
+        //-------------ORGANIZER-----------------
+
+        public const int OrganizerNameMaxLenght = 50;
+        public const int PhoneNumebrMaxLength = 15;
+
     }
 }

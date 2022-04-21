@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using static MusicEvents.Data.DataConstants;
 
 namespace MusicEvents.Data.Models
 {
@@ -8,10 +9,10 @@ namespace MusicEvents.Data.Models
 
         public int Id { get; init; }
         [Required]
-        [MaxLength(50)]
+        [MaxLength(OrganizerNameMaxLenght)]
         public string Name { get; set; }
         [Required]
-        [MaxLength(15)]
+        [MaxLength(PhoneNumebrMaxLength)]
         public string PhoneNumber { get; set; }
         [Required]
         public string UserId { get; set; }
