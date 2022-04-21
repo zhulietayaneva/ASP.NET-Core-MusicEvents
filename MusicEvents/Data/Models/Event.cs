@@ -30,5 +30,8 @@ namespace MusicEvents.Data.Models
 
         public DateTime Time { get; set; }
 
+        public int OrganizerId { get; set; }
+        public Organizer Organizer { get; set; }
+
     }
 }

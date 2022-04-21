@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MusicEvents.Data;
 using MusicEvents.Data.Models;
+using MusicEvents.Models.Artists;
 using MusicEvents.Models.Events;
 using System.Globalization;
+using System.Linq;
 
 namespace MusicEvents.Controllers
 {
@@ -21,7 +23,7 @@ namespace MusicEvents.Controllers
 
           
 
-            var res = new EventAddFormModel
+            var res = new AddEventFormModel
             {
                 Countries = data.Countries.ToList(),
                 Time = DateTime.UtcNow.Date,
@@ -32,13 +34,13 @@ namespace MusicEvents.Controllers
 
 
         [HttpPost]
-        public IActionResult Add(EventAddFormModel model)
+        public IActionResult Add(AddEventFormModel model)
         {
-            //if (!this.data.Countries.Any(c => c.Id == model.CountryId))
-            //{
-            //    this.ModelState.AddModelError(nameof(model.CountryId), "Category");
+            if (!this.data.Cities.Any(c => c.Id == model.CityId) || !this.data.Countries.Any(c => c.Id == model.CountryId))
+            {
+                this.ModelState.AddModelError(nameof(model.CountryId), "Select a valid place");
 
-            //}
+            }
 
             if (!ModelState.IsValid)
             {
@@ -49,6 +51,33 @@ namespace MusicEvents.Controllers
                 return View(model);
 
             }
+           
+            var modelArtists =data.Artists.Where(a => model.Artists.Contains(a.ArtistName)).ToList();
+
+            if (modelArtists.Count != model.Artists.Count)
+            {
+                var missingArtists = model.Artists.Union(modelArtists.Select(a => a.ArtistName)).ToList();
+                foreach (var artist in missingArtists)
+                {
+                    var currArtist =
+                        new AddMissingArtistsFromEvents()
+                        {
+                            ArtistFormModel = new AddArtistFormModel()
+                            { ArtistName = artist }
+                        };
+
+
+                }
+
+            }
+
+            //redirect to AddMissingArtistFromEvents AddArtistFormModel model-name  redirect then to this model
+
+
+
+
+
+            var artists = data.Artists.Select(a=>a.ArtistName).ToList();
 
             var curr = new Event
             {
@@ -56,13 +85,17 @@ namespace MusicEvents.Controllers
                 Venue = model.Venue,
                 Description = model.Description == null ? "" : model.Description,
                 ImgURL = model.ImgURL,
-                Time = model.Time
+                Time = model.Time,
+                CountryId=model.CountryId,
+                CityId=model.CityId,
+                 //Artists
+                
 
             };
 
 
-           // this.data.Events.Add(curr);
-           // this.data.SaveChanges();
+            this.data.Events.Add(curr);
+            this.data.SaveChanges();
 
             return RedirectToAction(nameof(All));
         }
@@ -91,6 +124,15 @@ namespace MusicEvents.Controllers
              .ToList();
 
             return View(events);
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var ev = this.data.Events.Where(e => e.Id == id).FirstOrDefault();
+            data.Remove(ev);
+            data.SaveChanges();
+
+            return RedirectToAction(nameof(All));
         }
 
         public IActionResult Details()

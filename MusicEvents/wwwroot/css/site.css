@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -30,3 +30,21 @@ img.logo {
     margin-top: 30px;
     margin-bottom: 30px;
 }
+
+p.b {
+    white-space: nowrap;
+    -webkit-line-clamp: 4;
+    max-height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.all-events img {
+    width: 100%;
+    height: auto;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+​

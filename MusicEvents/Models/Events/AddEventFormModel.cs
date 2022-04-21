@@ -1,10 +1,11 @@
 ﻿using MusicEvents.Data.Models;
+using MusicEvents.Models.Artists;
 using System.ComponentModel.DataAnnotations;
 using static MusicEvents.Data.DataConstants;
 
 namespace MusicEvents.Models.Events
 {
-    public class EventAddFormModel
+    public class AddEventFormModel
     {
         [Required(ErrorMessage = "Event name is required")]
         [MaxLength(EventNameMaxLength)]
@@ -33,7 +34,7 @@ namespace MusicEvents.Models.Events
         public ICollection<Country> Countries { get; set; } = new List<Country>();     
         public ICollection<City> Cities { get; set; } = new List<City>();
 
-        public ICollection<Artist> Artists { get; set; } = new List<Artist>();
+        public ICollection<string> Artists { get; set; } = new List<string>();
 
     }
 }

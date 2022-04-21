@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using MusicEvents.Data.Models;
 
@@ -20,8 +21,10 @@ namespace MusicEvents.Data
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Song> Songs { get; set; }
         public DbSet<City> Cities { get; set; }
-               
-        
+
+        public DbSet<Organizer> Organizers { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Artist>()
@@ -66,6 +69,11 @@ namespace MusicEvents.Data
                                    .HasOne(e => e.City)
                                    .WithMany(c => c.Events)
                                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Event>()
+                                .HasOne(e => e.Organizer)
+                                .WithMany(o => o.Events)
+                                .OnDelete(DeleteBehavior.Restrict);
 
 
             //---------------------------------------------------
@@ -139,6 +147,13 @@ namespace MusicEvents.Data
 
             //---------------------------------------------------
             //---------------------------------------------------
+
+            builder
+                    .Entity<Organizer>()
+                    .HasOne<IdentityUser>()
+                    .WithOne()
+                    .HasForeignKey<Organizer>(o =>  o.UserId);
+                    
 
             base.OnModelCreating(builder);
         }
