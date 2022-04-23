@@ -1,4 +1,4 @@
-﻿namespace MusicEvents.Models.Events
+﻿namespace MusicEvents.Models
 {
     public enum EventSorting
     {       

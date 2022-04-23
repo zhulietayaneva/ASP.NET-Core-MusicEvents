@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
+using MusicEvents.Models;
 using MusicEvents.Models.Artists;
 using MusicEvents.Models.Events;
 using System.Globalization;
