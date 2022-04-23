@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MusicEvents.Data;
 using MusicEvents.Models;
+using MusicEvents.Models.Songs;
 using System.Diagnostics;
 
 namespace MusicEvents.Controllers
@@ -17,26 +18,29 @@ namespace MusicEvents.Controllers
 
         public IActionResult Index()
         {
-            //var events = this.data
-            //.Events
-            //.OrderByDescending(e => e.Id)
-            //.Select(e => new AllEventsFormModel
-            //{
-            //    Id = e.Id,
-            //    CityName = e.City.CityName,
-            //    CountryName = e.Country.CountryName,
-            //    Artists = String.Join(", ", e.Artists.Select(a => a.ArtistName)),
-            //    Description = e.Description,
-            //    EventName = e.EventName,
-            //    ImgURL = e.ImgURL,
-            //    Time = e.Time,
-            //    Venue = e.Venue,
+
+            var songs =
+                this.data
+                .Songs
+                .Select(a => new ShowSongsInIndexModel
+                {
+                     ArtistsShow= String.Join(", ",a.Artists.Select(a=>a.ArtistName)),
+                     Genre=a.Genre.GenreName,
+                     SongName= a.SongName,
+                     SongURL= a.SongURL,
+                     Id= a.Id,
 
 
-            //})
-            //.ToList();
+                })
+                .OrderByDescending(a => a.Id)
+                .Take(3)
+                .ToList();
 
-            return View();
+
+       
+
+            return View(songs);
+         
         }
 
        

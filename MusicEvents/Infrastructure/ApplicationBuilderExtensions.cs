@@ -18,6 +18,7 @@ namespace MusicEvents.Infrastructure
             SeedCountriesAndCities(data);
             SeedGenres(data);
             SeedArtistsAndSongs(data);
+            SeedSongs(data);
             data.Database.Migrate();
             
             return app;
@@ -146,6 +147,36 @@ namespace MusicEvents.Infrastructure
 
             data.Artists.AddRange(artists);
             data.SaveChanges();
+        }
+
+        private static void SeedSongs(MusicEventsDbContext data) 
+        {
+            if (data.Songs.Any())
+            {
+                return;
+            }
+            var songs = new List<Song>() 
+            {
+                new Song(){ SongName = "Tova sum az", GenreId=5,
+                    SongURL=@"https://www.youtube.com/embed/V4GvNAVxRJo",
+                    Artists =  new List<Artist>() { data.Artists.Where(a => a.ArtistName == "Atanas Kolev").FirstOrDefault() }
+                },
+                new Song(){ SongName = "Megz", GenreId=5,
+                    SongURL=@"https://www.youtube.com/embed/k4hB9y5ieFE",
+                    Artists =  new List<Artist>(data.Artists.Where(a => a.ArtistName == "MBT" || a.ArtistName == "Secta").ToList())
+                },
+                new Song(){ SongName = "Garmish", GenreId=1,
+                    SongURL=@"https://www.youtube.com/embed/tshokdMQsvk",
+                    Artists =  new List<Artist>(){ data.Artists.Where(a => a.ArtistName == "Sofi Marinova").FirstOrDefault() }
+                }
+
+
+            };
+
+            data.Songs.AddRange(songs);
+            data.SaveChanges();
+
+
         }
     }
 }
