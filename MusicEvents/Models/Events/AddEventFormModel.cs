@@ -22,6 +22,7 @@ namespace MusicEvents.Models.Events
         public string ImgURL { get; set; }
 
         [MaxLength(EventDescriptionMaxLength)]
+        [Display(Name="Description")]
         public string? Description { get; set; }
 
         public int CountryId { get; set; }

@@ -104,14 +104,47 @@ namespace MusicEvents.Controllers
                 .Organizers
                 .Any(d => d.UserId==
                 this.User.GetId());
-              
 
 
-        public IActionResult All()
+      
+        public IActionResult All([FromQuery] AllEventsQueryModel query)
         {
-             var events = this.data
-             .Events
-             .OrderByDescending(e => e.Id)
+            var eventsQuery = data.Events.AsQueryable();
+            query.Countries = data.Countries.ToList();
+            query.TotalEvents = this.data.Events.Count();
+
+            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+            {
+                eventsQuery =
+                    eventsQuery
+                    .Where(e => e.EventName.Contains(query.SearchTerm.ToLower()));
+            }
+              
+            if (eventsQuery.Any(a=>a.CountryId==query.CountryId))
+            {
+                eventsQuery =
+                    eventsQuery
+                    .Where(e => e.CountryId==query.CountryId);
+            }   
+            
+            if (eventsQuery.Any(a=>a.CityId==query.CityId))
+            {
+                eventsQuery =
+                    eventsQuery
+                    .Where(e => e.CityId==query.CityId);
+            }
+
+            eventsQuery = query.SortingType switch
+            {
+               
+                EventSorting.Date => eventsQuery.OrderBy(g => g.Time),
+                EventSorting.EventName => eventsQuery.OrderBy(g => g.EventName),
+                EventSorting.Id or _ => eventsQuery.OrderByDescending(a => a.Id)
+            };
+
+            var events = eventsQuery
+                .Skip((query.CurrentPage - 1) * AllEventsQueryModel.EventsPerPage)
+                .Take(AllEventsQueryModel.EventsPerPage)
              .Select(e => new AllEventsFormModel
              {
                  Id = e.Id,
@@ -128,7 +161,12 @@ namespace MusicEvents.Controllers
              })
              .ToList();
 
-            return View(events);
+
+           
+            query.Events = events;
+            //query.TotalEvents = this.data.Events.Count();
+
+            return View(query);
         }
         [Authorize]
         public IActionResult Delete(int id)

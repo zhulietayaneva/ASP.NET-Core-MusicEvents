@@ -52,10 +52,10 @@
 
                 <div class="col-md-4">
                  <label asp-for="ArtistId" class="form-label add-form" >Choose Artist</label>
-                 <select id="optionAdd" onchange="getSelectedArtist()" class="form-select" aria-label="Select artist">
+                 <select asp-for="ArtistId" id="optionAdd" onchange="getSelectedArtist()" class="form-select" aria-label="Select artist">
                     @foreach (var artist in @Model.Artists)
                     {
-                        <option value=@artist.ArtistName>@artist.ArtistName</option>
+                        <option value=@artist.Id>@artist.ArtistName</option>
                     }
                  </select>
                 </div>

@@ -1,7 +1,43 @@
-﻿@model IEnumerable<AllEventsFormModel>
+﻿@model AllEventsQueryModel
+
+<form method="get">
+    <div class="row">
+
+        <div class="form-group col-md-4">
+            <label asp-for="SearchTerm"></label>
+            <input asp-for="SearchTerm" class="form-control" placeholder="Search..." />
+        </div>
+        <div class="form-group col-md-3">
+            <div class="form-group">
+                 <label asp-for="CountryId" class="form-label add-form">Country</label>
+                 <select asp-for="CountryId" id="CountryId" name="CountryId" class="form-control" asp-items="@(new SelectList(@Model.Countries, "Id", "CountryName"))"></select>
+            </div>
+        </div>
+        <div class="form-group col-md-3">
+            <div class="form-group">
+               <label asp-for="CityId" class="form-label add-form">City</label>
+               <select asp-for="CityId" id="CityId" name="CityId" class="form-control" asp-items="@(new SelectList(string.Empty, "CityId", "CityName"))"></select>
+            </div>
+        </div>  
+        
+
+        <div class="form-group col-md-3">
+            <div class="form-group">
+                <label asp-for="SortingType"></label>
+                <select asp-for="SortingType" class="form-control">
+                    <option value="0" selected>Newest</option>
+                    <option value="1">Date</option>
+                    <option value="2">Name</option>
+                </select>
+            </div>
+        </div>
 
 
-@foreach (var ev in Model)
+    </div>
+</form>
+
+
+@foreach (var ev in Model.Events)
 {
 <div class="card mb-3 col-7" style="box-shadow: 0px 4px 5px  rgba(71, 71, 71, 0.2)" >
 	 <div class="row g-0">
@@ -22,4 +58,93 @@
 		</div>
 	</div>
 </div>
+}
+
+
+@{
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+
+    var maxPage = Math.Ceiling((double)Model.TotalEvents / AllEventsQueryModel.EventsPerPage);
+}
+
+<div class="row">
+
+    <div class="col">
+        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
+           asp-controller="Events"
+           asp-action="All"
+           asp-route-currentPage="@previousPage"
+           asp-route-city="@Model.CityId"
+           asp-route-searchTerm="@Model.SearchTerm"
+           asp-route-sortingType="@((int)Model.SortingType)"><<</a>
+    </div>
+
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="">
+            <a class="btn btn-primary  text-white" style="max-height:100%" href="/Events/Add">Add Event</a>
+        </div>
+    }
+
+
+    @{
+        var shouldButtonBeDisabled = Model.CurrentPage == maxPage ||
+                                     !Model.Events.Any();
+    }
+
+    <div class="col">
+        <a class="btn btn-primary float-sm-right @(shouldButtonBeDisabled ? "disabled" : string.Empty)" style="margin-top: 10px"
+           asp-controller="Events"
+           asp-action="All"
+           asp-route-currentPage="@(Model.CurrentPage + 1)"
+           asp-route-city="@Model.CityId"
+           asp-route-searchTerm="@Model.SearchTerm"
+           asp-route-sortingType="@((int)Model.SortingType)">>></a>
+    </div>
+</div>
+
+
+@if (!Model.Events.Any())
+{
+    <h2 class="text-center">No events found by the given criteria!</h2>
+}
+
+@section Scripts{
+    
+<script type="text/javascript">    
+        
+         $(document).ready(function () {           
+           var items = "<option value='0'>Select</option>";
+           $("#CityId").html(items);                               
+        });
+</script>
+
+<script type="text/javascript"> 
+        $(document).ready(function () {
+
+          $("#CountryId").change(function () {
+
+             var url= '@Url.Content("~/")'+ "Events/GetCities";
+            
+             var ddlsource = "#CountryId";
+
+              $.getJSON(url, { CountryId: $(ddlsource).val() }, function (data) {
+
+                var items = '';
+                $("#CityId").empty();
+                $.each(data, function (i, city) {
+
+                    items += "<option value='" + city.value + "'>" + city.text + "</option>";
+                });
+                $('#CityId').html(items);
+        }); 
+          }); 
+             });
+
+</script> 
 }
