@@ -8,70 +8,67 @@
          <div class=" offset-md-2 col-md-8 col-sm-12">
              <h2 class ="heading-margin text-center">Add Event</h2>
              <form  method="post" class="row g-3">
-              <div class="col-md-6">
-                <label asp-for="EventName" class="form-label">Event Name</label>
-                <input asp-for="EventName" class="form-control" placeholder="Enter name here">
-                <span asp-validation-for="EventName" class="small text-danger"></span>
 
-              </div>
+                <div class="col-md-6">
+                 <label asp-for="EventName" class="form-label add-form">Event Name</label>
+                 <input asp-for="EventName" class="form-control" placeholder="Enter name here">
+                 <span asp-validation-for="EventName" class="small text-danger"></span>
+                </div>
+                  
+                <div class="col-md-6">
+                 <label asp-for="Venue" class="form-label add-form">Venue</label>
+                 <input asp-for="Venue" class="form-control" placeholder="Enter venue here">
+                 <span asp-validation-for="Venue" class="small text-danger"></span>
+                </div>
+                  
+                <div class="col-md-6">
+                 <label asp-for="ImgURL" class="form-label add-form">Image URL</label>
+                 <input asp-for="ImgURL" class="form-control" placeholder="Enter image URL here">
+                 <span asp-validation-for="ImgURL" class="small text-danger"></span>
+                </div>
+                
+                <div class="col-md-6">
+                 <label asp-for="Description" class="form-label add-form">Event Name</label>
+                 <textarea asp-for="Description" class="form-control" rows="5" placeholder="Enter description here"></textarea>
+                 <span asp-validation-for="Description" class="small text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                 <label asp-for="CountryId" class="form-label add-form">Country</label>
+                 <select asp-for="CountryId" id="CountryId" name="CountryId" class="form-control" asp-items="@(new SelectList(@Model.Countries, "Id", "CountryName"))"></select>
+                </div>    
+                
+                <div class="col-md-4">
+                 <label asp-for="CityId" class="form-label add-form">City</label>
+                 <select asp-for="CityId" id="CityId" name="CityId" class="form-control" asp-items="@(new SelectList(string.Empty, "CityId", "CityName"))"></select>
+                </div>
+
+
+                <div class="col-md-6">
+                 <label asp-for="Time" class="form-label add-form">Choose Date</label>
+                 <input asp-for="Time" class="form-control" id="datetimepicker1">
+                 <span asp-validation-for="Time" class="small text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                 <label asp-for="ArtistId" class="form-label add-form" >Choose Artist</label>
+                 <select id="optionAdd" onchange="getSelectedArtist()" class="form-select" aria-label="Select artist">
+                    @foreach (var artist in @Model.Artists)
+                    {
+                        <option value=@artist.ArtistName>@artist.ArtistName</option>
+                    }
+                 </select>
+                </div>
+
+                <div class="col-12">
+                 <button type="submit" class="btn " style="background-color:#d1a9eb; box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.4); margin-right: 4px;">Submit</button>
+                </div>
+
+              </form>
               
-              <div class="col-md-6">
-                <label asp-for="Venue" class="form-label">Venue</label>
-                <input asp-for="Venue" class="form-control" placeholder="Enter venue here">
-                <span asp-validation-for="Venue" class="small text-danger"></span>
-
-              </div>
-              
-              <div class="col-md-6">
-                <label asp-for="ImgURL" class="form-label">Image URL</label>
-                <input asp-for="ImgURL" class="form-control" placeholder="Enter image URL here">
-                <span asp-validation-for="ImgURL" class="small text-danger"></span>
-
-              </div>
-            
-              <div class="col-md-6">
-                <label asp-for="Description" class="form-label">Event Name</label>
-                <textarea asp-for="Description" class="form-control" rows="5" placeholder="Enter description here"></textarea>
-                <span asp-validation-for="Description" class="small text-danger"></span>
-
-              </div>
-
-              <div class="col-md-4">
-               <label asp-for="CountryId" class="form-label">Country</label>
-               <select asp-for="CountryId" id="CountryId" name="CountryId" class="form-control" asp-items="@(new SelectList(@Model.Countries, "Id", "CountryName"))"></select>
-               
-              </div>    
-            
-              <div class="col-md-4">
-               <label asp-for="CityId" class="form-label">City</label>
-               <select asp-for="CityId" id="CityId" name="CityId" class="form-control" asp-items="@(new SelectList(string.Empty, "CityId", "CityName"))"></select>
-              </div>
-
-
-              <div class="col-md-6">
-                <label asp-for="Time" class="form-label">Choose Date</label>
-                <input asp-for="Time" class="form-control" value="@DateTime.Today">
-                <span asp-validation-for="Time" class="small text-danger"></span>
-              
-              </div>
-
-              
-
-            <button type='button' onclick="addArtist()"  id='btn1'>submit</button> 
-
-            
-          <div class="col-12" id="loadPartial" >
-
-           </div>
-             
-              <div class="col-12">
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
-            </form>
-              
-         </div>
+            </div>
                                
-     </div>
+        </div>
  </div>
 @section Scripts{
 
@@ -109,7 +106,6 @@
 
 
 <script type="text/javascript">
-
       
         var myDiv = document.getElementById("loadPartial");
         var btn = document.getElementById("btn1");
@@ -123,7 +119,66 @@
        
 </script>
 
-@*<script type="text/javascript">
+
+<script type="text/javascript">
+ 
+      
+ 
+       function getSelectedArtist(){
+           alert("esgsgs");
+            var count = 0;
+            var e = document.getElementById("optionAdd");
+            var ad = document.getElementById("artistsDiv");
+            var tb = document.getElementById("textAdd");
+            var strUser = e.options[e.selectedIndex].text;
+            tb.value+=strUser;
+
+            var newDiv = document.createElement("div");
+            newdiv.class ="row g-3";
+
+            var nestedDiv = document.createElement("div");
+            nestedDiv.class="col";
+
+            var input = document.createElement("input");
+            input.setAttribute(type, "text");
+            input.setAttribute(asp-for, "Artists");
+            input.setAttribute(class, "form-control");
+            input.value+=strUser;
+            nestedDiv.appendChild(input);
+
+            newDiv.appendChild(nestedIdv);
+
+            ad.appendChild(newDiv);
+
+            }
+
+            @* 
+            <div class="row g-3">
+              <div class="col">
+                <input type="text" asp-for="Artists" class="form-control" placeholder="Artist name">
+              </div>
+            
+              <div class="col">
+                  <button type="button" class="btn btn-danger" onclick="{(ev) => remove(ev)}" id="btnRemove">-</button>
+              </div>
+            </div>
+            *@
+
+       
+</script>
+
+<script>
+  $(function () {
+    $('#datetimepicker1').datetimepicker({ 
+      format: 'YYYY-MM-DD HH:mm',
+      useCurrent: true,
+      
+    });
+  });
+</script>
+
+@*
+<script type="text/javascript">
     
      function remove(ev){
          alert("sgsge");
@@ -135,7 +190,8 @@
             myDiv.removeChild(divToRemove);
         }
     }
-</script>*@
+</script>
+*@
 
  }
 

@@ -18,7 +18,7 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
-    background-image: url('../Assets/Background/bg.jpg');
+    background-image: url('../Assets/Background/bg.webp');
 }
 
 img.logo {
@@ -46,5 +46,11 @@ p.b {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+}
+
+.add-form {
+    font-size: 17px;
+    font-weight:500;
+    padding-top:5px;
 }
 ​

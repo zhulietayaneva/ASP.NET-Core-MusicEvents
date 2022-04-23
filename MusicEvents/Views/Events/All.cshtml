@@ -3,21 +3,21 @@
 
 @foreach (var ev in Model)
 {
-<div class="card mb-3 col-7" >
+<div class="card mb-3 col-7" style="box-shadow: 0px 4px 5px  rgba(71, 71, 71, 0.2)" >
 	 <div class="row g-0">
 		<div class="col-md-6">		
 			<img src=@ev.ImgURL class="card-img rounded-start" alt=@ev.Venue>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-6" style="background-color:rgb(184, 184, 184,0.2) ">
 			<div class="card-body justify-content-center" style="padding-left: 20px; padding-top: 18px; font-size: 18px;">
 				<h5 class="card-title">@ev.EventName</h5>
 				<h6 class="card-title">@ev.Venue</h6>
-				<p class="card-text">@ev.Description</p>
+				<p class="card-text b">@ev.Description</p>
 				<p class="card-text"><small class="text-muted">@ev.Time.ToString("dd.MM.yyyy hh:mm") - @ev.CityName, @ev.CountryName</small></p>
-				<div class="d-flex align-content-end flex-wrap">
-					<a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id" class="btn" style="background-color:#dd9eff">Check event</a>
-					<a asp-controller="Events" asp-action="Delete" asp-route-id="@ev.Id" class="btn btn-danger">X</a>
-				</div>
+				
+					<a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id" class="btn" style="background-color:#d1a9eb; box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.4); margin-right: 4px;">Check event</a>
+					<a asp-controller="Events" asp-action="Delete" asp-route-id="@ev.Id" class="btn btn-danger" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.4)">X</a>
+				
 			</div>
 		</div>
 	</div>

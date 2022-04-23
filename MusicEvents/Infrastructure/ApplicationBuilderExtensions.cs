@@ -16,6 +16,8 @@ namespace MusicEvents.Infrastructure
             var data = scopedServices.ServiceProvider.GetService<MusicEventsDbContext>();
 
             SeedCountriesAndCities(data);
+            SeedGenres(data);
+            SeedArtistsAndSongs(data);
             data.Database.Migrate();
             
             return app;
@@ -30,9 +32,9 @@ namespace MusicEvents.Infrastructure
             }
 
             string inputJson = File.ReadAllText(@".\Data\countries.json");
-
             dynamic itemJson = JsonConvert.DeserializeObject(inputJson);
-                var rows = itemJson;
+            var rows = itemJson;
+
             List<CountriesDTO> countriesAndCities = new List<CountriesDTO>();
             foreach (dynamic row in rows)
             {
@@ -56,7 +58,6 @@ namespace MusicEvents.Infrastructure
 
             }
 
-
             List<Country> countries = countriesAndCities
                 .Select(c => new Country
                 {
@@ -69,10 +70,14 @@ namespace MusicEvents.Infrastructure
                 })
                 .ToList();
           
-            data.AddRange(countries);
+            data.Countries.AddRange(countries);
             data.SaveChanges();
-            //data.Countries.AddRange(countries);
+            
 
+            if (data.Cities.Any())
+            {
+                return;
+            }
             List<City> cities = new List<City>();
             foreach (var country in data.Countries)
             { 
@@ -87,6 +92,59 @@ namespace MusicEvents.Infrastructure
 
 
             data.Cities.AddRange(cities);
+            data.SaveChanges();
+        }
+
+        private static void SeedGenres(MusicEventsDbContext data)
+        {
+            if (data.Genres.Any())
+            {
+                return;
+            }
+            var genres = new List<Genre>() 
+            {
+                new Genre(){ GenreName="Pop-Folk"},
+                new Genre(){ GenreName="Rock"},
+                new Genre(){ GenreName="Metal"},
+                new Genre(){ GenreName="Pop"},
+                new Genre(){ GenreName="Rap"},
+                new Genre(){ GenreName="Techno"},
+                new Genre(){ GenreName="Jazz"}
+            };
+            data.Genres.AddRange(genres);
+            data.SaveChanges();
+
+        }
+        private static void SeedArtistsAndSongs(MusicEventsDbContext data)
+        {
+            if (data.Artists.Any())
+            {
+                return;
+            }
+
+
+            var artists = new List<Artist>() 
+            { 
+                new Artist(){ArtistName="Azis", GenreId=1,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Galena", GenreId=1,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Sofi Marinova", GenreId=1,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Black Sabbath", GenreId=2,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Secta", GenreId=5,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="MBT", GenreId=5,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Atanas Kolev", GenreId=5,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Boro Purvi", GenreId=5,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="MurdaBoyz", GenreId=5,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="BNR", GenreId=5,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Mihaela Fileva", GenreId=4,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Mihaela Marinova", GenreId=4,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Dara", GenreId=4,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Geri-Nikol", GenreId=4,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Oscar Jerome", GenreId=7,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+                new Artist(){ArtistName="Preslava", GenreId=1,BirthDate=new DateTime(),ImageURL=@"https://img-s2.onedio.com/id-5d12321b352f4df72b2ae76d/rev-0/w-635/listing/f-jpg-webp/s-26ac11675c6dbb789c1e202cac0428be2487c4a9.webp",CountryId=1},
+            
+            };
+
+            data.Artists.AddRange(artists);
             data.SaveChanges();
         }
     }

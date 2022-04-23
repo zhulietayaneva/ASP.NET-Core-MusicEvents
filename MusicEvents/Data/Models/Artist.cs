@@ -13,7 +13,7 @@ namespace MusicEvents.Data.Models
         public Genre Genre { get; set; }
         public int GenreId { get; set; }    
         
-        public int Age { get; set; }
+        public DateTime BirthDate { get; set; }
 
         [MaxLength(ArtistBioMaxLenght)]
         public string? Biography { get; set; }
@@ -25,7 +25,9 @@ namespace MusicEvents.Data.Models
         public Country Country { get; set; }
         public int CountryId { get; set; }
 
-        public ICollection<Event> Events { get; set; }
+        public ICollection<Event> Events { get; set; } = new List<Event>();
         public ICollection<Song> Songs { get; set; } = new List<Song>();
+
+     
     }
 }

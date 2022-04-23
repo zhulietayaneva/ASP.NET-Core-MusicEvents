@@ -1,0 +1,38 @@
+﻿@model AllArtistsFormModel
+
+
+@*<div class="row">
+    @foreach (var artist in Model.Artists)
+    {
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="autofit">
+                    <img class="card-img-top img-fluid autoFit" src=@artist.ImageUrl alt="@artist.Name" style="max-height:200px">
+                </div>
+                <div class="card-body mb-3">
+                    <h5 class="card-title">@artist.Name</h5>
+                    <p class="card-text">
+                        <small>@artist.NumberOfEvents.Count() events in the database</small>
+                    </p>
+
+                    @if (!string.IsNullOrWhiteSpace(artist.Description))
+                    {
+                        <p class="b"> About @artist.Name - @artist.Description</p>
+                    }
+                    else
+                    {
+                        <p class="b"> No information about the artist yet</p>
+                    }
+
+                    <a asp-controller="Artists" asp-action="Profile" asp-route-id="@artist.Id" class="btn btn-info">Profile</a>
+                    @if (Organizers.IsOrganizer(User.Id()))
+                    {
+                        <a asp-controller="Artists" asp-action="Edit" asp-route-id="@artist.Id" class="btn btn-warning">Edit</a>
+                        <a asp-controller="Artists" asp-action="Delete" asp-route-id="@artist.Id" class="btn btn-danger">X</a>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+</div>*@

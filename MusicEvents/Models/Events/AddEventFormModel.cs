@@ -1,5 +1,4 @@
 ﻿using MusicEvents.Data.Models;
-using MusicEvents.Models.Artists;
 using System.ComponentModel.DataAnnotations;
 using static MusicEvents.Data.DataConstants;
 
@@ -33,8 +32,7 @@ namespace MusicEvents.Models.Events
         public DateTime Time { get; set; }
         public ICollection<Country> Countries { get; set; } = new List<Country>();     
         public ICollection<City> Cities { get; set; } = new List<City>();
-
-        public ICollection<string> Artists { get; set; } = new List<string>();
-
+        public ICollection<Artist> Artists { get; set; } = new List<Artist>();
+        public int ArtistId { get; set; }
     }
 }

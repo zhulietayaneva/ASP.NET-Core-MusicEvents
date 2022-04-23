@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MusicEvents.Models.Events
+namespace MusicEvents.Models
 {
     public class DateLessThanOrEqualToToday : ValidationAttribute
     {

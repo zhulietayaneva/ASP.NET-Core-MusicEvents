@@ -1,3 +1,25 @@
-﻿@model AddArtistFormModel;
+﻿@model AddArtistFormModel
+
+@{
+    ViewData["Title"] = "Add Artist";
+}
 
 
+<div class="container">
+    <div class="row">
+
+        <div class="col-sm-12 offset-md=3 col-md-6 offset-lg-2 col=lg-8 offset-xl-3 col-xl-6">
+            <h2 class="heading-margin" style="text-align:center">Add Artist</h2>
+
+            <form method="post">
+               
+                <partial name="_AddArtistsPartial" model="@Model"/>
+                <div style="padding-top: 16px;">
+                    <input class="btn box-shadow" type="submit" style="background-color:#d1a9eb; box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.4)" value="Add"/>
+                </div>
+                
+
+            </form>
+        </div>
+    </div>
+</div>

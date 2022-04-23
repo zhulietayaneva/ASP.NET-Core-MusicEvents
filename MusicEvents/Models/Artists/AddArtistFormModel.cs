@@ -9,8 +9,10 @@ namespace MusicEvents.Models.Artists
         [Required]
         [MaxLength(ArtistNameMaxLenght)]
         public string ArtistName { get; set; }
-
+        [DateLessThanOrEqualToToday]
+        public DateTime BirthDate { get; set; }
         public int GenreId { get; set; }
+        public ICollection<Genre> Genres { get; set; }
 
         [MaxLength(ArtistBioMaxLenght)]
         public string? Biography { get; set; }
@@ -18,7 +20,7 @@ namespace MusicEvents.Models.Artists
         [Required]
         [Url]
         public string ImageURL { get; set; }
-
+        public int CountryId { get; set; }
         public ICollection<Country> Countries { get; set; } = new List<Country>();
 
 

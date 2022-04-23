@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MusicEvents.Data.Migrations
 {
-    public partial class Migration5 : Migration
+    public partial class Migration6 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -84,7 +84,7 @@ namespace MusicEvents.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ArtistName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     GenreId = table.Column<int>(type: "int", nullable: false),
-                    Age = table.Column<int>(type: "int", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Biography = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CountryId = table.Column<int>(type: "int", nullable: false)

@@ -12,14 +12,14 @@ using MusicEvents.Data;
 namespace MusicEvents.Data.Migrations
 {
     [DbContext(typeof(MusicEventsDbContext))]
-    [Migration("20220421152639_Migration5")]
-    partial class Migration5
+    [Migration("20220422180552_Migration6")]
+    partial class Migration6
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -264,9 +264,6 @@ namespace MusicEvents.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
                     b.Property<string>("ArtistName")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -275,6 +272,9 @@ namespace MusicEvents.Data.Migrations
                     b.Property<string>("Biography")
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CountryId")
                         .HasColumnType("int");

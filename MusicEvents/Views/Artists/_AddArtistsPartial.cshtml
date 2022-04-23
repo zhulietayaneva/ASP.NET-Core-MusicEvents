@@ -1,0 +1,57 @@
+﻿@model AddArtistFormModel;
+
+
+<div class="form-group add-form">
+    <label asp-for="ArtistName"></label>
+    <input asp-for="ArtistName" class="form-control" placeholder="Enter name">
+    <span asp-validation-for="ArtistName" class="text-danger"></span>
+</div>
+
+<div class="form-group add-form">
+    <label asp-for="BirthDate"></label>
+    <input asp-for="BirthDate" class="form-control" value="@DateTime.UtcNow.ToString("dd/MM/yyyy HH:mm")" placeholder="@DateTime.UtcNow.ToString("dd/MM/yyyy HH:mm")">
+</div>
+
+<div class="form-group add-form">
+    <label asp-for="Biography"></label>
+    <textarea asp-for="Biography" class="form-control" rows="2" placeholder="Enter any additional information"></textarea>
+    <span asp-validation-for="Biography" class="text-danger"></span>
+</div>
+
+<div class="form-group add-form">
+    <label asp-for="ImageURL"></label>
+    <input asp-for="ImageURL" class="form-control" placeholder="Your image Url here">
+    <span asp-validation-for="ImageURL" class="text-danger"></span>
+</div>
+
+
+<div class="form-group add-form">
+    <div class="form-group">
+        <label asp-for="GenreId"></label>
+        <select asp-for="GenreId" class="form-control">
+            <option value="">All</option>
+
+            @foreach (var genre in Model.Genres)
+            {
+                <option value="@genre.Id">@genre.GenreName</option>
+
+            }
+        </select>
+    </div>
+</div>
+<div class="form-group add-form" >
+    <div class="form-group add-form">
+        <label asp-for="CountryId"></label>
+        <select asp-for="CountryId" class="form-control">
+            <option value="">All</option>
+
+            @foreach (var country in Model.Countries)
+            {
+                <option value="@country.Id">@country.CountryName</option>
+
+            }
+        </select>
+    </div>
+</div>
+
+
