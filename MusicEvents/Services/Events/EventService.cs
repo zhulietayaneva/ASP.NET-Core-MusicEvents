@@ -65,10 +65,6 @@ namespace MusicEvents.Services.Events
                  .ToList();
 
 
-
-                
-        
-
                 return new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage=eventsPerPage};
             
         }

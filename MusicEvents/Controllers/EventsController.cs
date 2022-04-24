@@ -7,6 +7,7 @@ using MusicEvents.Infrastructure;
 using MusicEvents.Models;
 using MusicEvents.Models.Artists;
 using MusicEvents.Models.Events;
+using MusicEvents.Services.Events;
 using System.Globalization;
 
 namespace MusicEvents.Controllers
@@ -14,11 +15,14 @@ namespace MusicEvents.Controllers
     public class EventsController : Controller
     {
         private readonly MusicEventsDbContext data;
+        private readonly IEventService events;
+
         
 
-        public EventsController(MusicEventsDbContext data)
+        public EventsController(MusicEventsDbContext data, IEventService events)
         {
             this.data = data;
+            this.events = events;
         }
 
         [Authorize]
@@ -110,62 +114,19 @@ namespace MusicEvents.Controllers
       
         public IActionResult All([FromQuery] AllEventsQueryModel query)
         {
-            var eventsQuery = data.Events.AsQueryable();
+            var events = this.events.All(query.SearchTerm,
+                                         query.CountryId,
+                                         query.CityId,
+                                         query.SortingType,
+                                         query.CurrentPage,
+                                         AllEventsQueryModel.EventsPerPage);
+
+
+
             query.Countries = data.Countries.ToList();
-            query.TotalEvents = this.data.Events.Count();
-
-            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
-            {
-                eventsQuery =
-                    eventsQuery
-                    .Where(e => e.EventName.Contains(query.SearchTerm.ToLower()));
-            }
-              
-            if (eventsQuery.Any(a=>a.CountryId==query.CountryId))
-            {
-                eventsQuery =
-                    eventsQuery
-                    .Where(e => e.CountryId==query.CountryId);
-            }   
-            
-            if (eventsQuery.Any(a=>a.CityId==query.CityId))
-            {
-                eventsQuery =
-                    eventsQuery
-                    .Where(e => e.CityId==query.CityId);
-            }
-
-            eventsQuery = query.SortingType switch
-            {
-               
-                EventSorting.Date => eventsQuery.OrderBy(g => g.Time),
-                EventSorting.EventName => eventsQuery.OrderBy(g => g.EventName),
-                EventSorting.Id or _ => eventsQuery.OrderByDescending(a => a.Id)
-            };
-
-            var events = eventsQuery
-                .Skip((query.CurrentPage - 1) * AllEventsQueryModel.EventsPerPage)
-                .Take(AllEventsQueryModel.EventsPerPage)
-             .Select(e => new AllEventsFormModel
-             {
-                 Id = e.Id,
-                 CityName=e.City.CityName,
-                 CountryName=e.Country.CountryName,
-                 Artists=String.Join(", ",e.Artists.Select(a=>a.ArtistName)),
-                 Description=e.Description,
-                 EventName=e.EventName,
-                 ImgURL=e.ImgURL,
-                 Time = e.Time,
-                 Venue=e.Venue,
-                 
-
-             })
-             .ToList();
-
-
-           
-            query.Events = events;
-            //query.TotalEvents = this.data.Events.Count();
+            query.TotalEvents = events.TotalEvents;
+            query.Events = events.Events;
+          
 
             return View(query);
         }

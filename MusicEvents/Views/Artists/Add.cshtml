@@ -13,7 +13,7 @@
 
             <form method="post">
                
-                <partial name="_AddArtistsPartial" model="@Model"/>
+                <partial name="_AddArtistsPartial"  model="@Model"/>
                 <div style="padding-top: 16px;">
                     <input class="btn box-shadow" type="submit" style="background-color:#d1a9eb; box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.4)" value="Add"/>
                 </div>
@@ -23,3 +23,13 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+    format: 'dd/MM/yyyy HH:mm',
+    startDate: '-10d'
+    });
+    </script>
+}

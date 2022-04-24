@@ -2,11 +2,11 @@
 
 namespace MusicEvents.Models
 {
-    public class DateLessOrEqualToToday : ValidationAttribute
+    public class BirthDay : ValidationAttribute
     {
         public override string FormatErrorMessage(string name)
         {
-            return "You cannot choose a date in the past!";
+            return "You cannot choose a date in the future!";
         }
 
         protected override ValidationResult IsValid(object objValue,
@@ -14,8 +14,8 @@ namespace MusicEvents.Models
         {
             var dateValue = objValue as DateTime? ?? new DateTime();
 
-           
-            if (dateValue.Date <
+
+            if (dateValue.Date >
                 DateTime.Now.Date)
             {
                 return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));

@@ -9,10 +9,10 @@ namespace MusicEvents.Models.Artists
         [Required]
         [MaxLength(ArtistNameMaxLenght)]
         public string ArtistName { get; set; }
-        [DateLessThanOrEqualToToday]
+        [BirthDay]
         public DateTime BirthDate { get; set; }
         public int GenreId { get; set; }
-        public ICollection<Genre> Genres { get; set; }
+        public ICollection<Genre> Genres { get; set; } =  new List<Genre>();
 
         [MaxLength(ArtistBioMaxLenght)]
         public string? Biography { get; set; }

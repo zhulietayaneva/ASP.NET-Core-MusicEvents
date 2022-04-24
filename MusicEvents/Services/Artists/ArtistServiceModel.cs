@@ -1,8 +1,6 @@
-﻿using MusicEvents.Data.Models;
-
-namespace MusicEvents.Models.Artists
+﻿namespace MusicEvents.Services.Artists
 {
-    public class AllArtistsFormModel
+    public class ArtistServiceModel
     {
         public int Id { get; set; }
         public string ArtistName { get; set; }
@@ -10,5 +8,7 @@ namespace MusicEvents.Models.Artists
         public int NumberOfEvents { get; set; }
         public string GenreName { get; set; }
         public string ImageUrl { get; set; }
+        public string CountryName{ get; set; }
+
     }
 }

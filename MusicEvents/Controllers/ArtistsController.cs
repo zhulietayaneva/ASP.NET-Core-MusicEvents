@@ -4,15 +4,18 @@ using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Artists;
+using MusicEvents.Services.Artists;
 
 namespace MusicEvents.Controllers
 {
     public class ArtistsController:Controller
     {
         private readonly MusicEventsDbContext data;
+        private readonly IArtistService artists;
 
-        public ArtistsController(MusicEventsDbContext data)
+        public ArtistsController(MusicEventsDbContext data, IArtistService artists)
         {
+            this.artists = artists;
             this.data = data;
         }
 
@@ -57,6 +60,11 @@ namespace MusicEvents.Controllers
             {
                 this.ModelState.AddModelError(nameof(model.CountryId), "Select a valid place");
 
+            }  
+            if (!this.data.Genres.Any(c => c.Id == model.GenreId))
+            {
+                this.ModelState.AddModelError(nameof(model.GenreId), "Select a valid genre");
+
             }
 
             if (!ModelState.IsValid)
@@ -65,6 +73,10 @@ namespace MusicEvents.Controllers
                 model.Genres = data.Genres.ToList();
 
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
+                foreach (var error in errors)
+                {
+                    Console.WriteLine(error.ErrorMessage);
+                }
                 return View(model);
 
             }
@@ -90,36 +102,29 @@ namespace MusicEvents.Controllers
             return RedirectToAction(nameof(All));
         }
 
+
+        public IActionResult All([FromQuery]AllArtistsQueryModel query) 
+        {
+            var artists = this.artists.All(query.SearchTerm,
+                                           query.CountryId,
+                                           query.SortingType,
+                                           query.CurrentPage,   AllArtistsQueryModel.ArtistsPerPage,
+                                           query.GenreId);
+
+
+
+            query.Countries = data.Countries.ToList();
+            query.TotalArtists = artists.TotalArtists;
+            query.Artists = artists.Artists;
+            query.Genres = data.Genres.ToList();
+            return View(query);
+        }
         private bool UserIsOrganizer()
                => this.data //!
                .Organizers
                .Any(d => d.UserId ==
                this.User.GetId());
 
-
-        public IActionResult All()
-        {
-            //var events = this.data
-            //.Artists
-            //.OrderByDescending(e => e.Id)
-            //.Select(e => new AllArtistsFormModel
-            //{
-            //    Id = e.Id,
-            //    CityName = e.City.CityName,
-            //    CountryName = e.Country.CountryName,
-            //    Artists = String.Join(", ", e.Artists.Select(a => a.ArtistName)),
-            //    Description = e.Description,
-            //    EventName = e.EventName,
-            //    ImgURL = e.ImgURL,
-            //    Time = e.Time,
-            //    Venue = e.Venue,
-
-
-            //})
-            //.ToList();
-
-            return View();
-        }
 
 
         public IActionResult Delete(int id)

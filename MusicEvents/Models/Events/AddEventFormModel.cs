@@ -29,7 +29,7 @@ namespace MusicEvents.Models.Events
         public int CityId { get; set; }
 
         [Required(ErrorMessage = "Event date and time are required")]
-        [DateLessThanOrEqualToToday]
+        [DateLessOrEqualToToday]
         public DateTime Time { get; set; }
         public ICollection<Country> Countries { get; set; } = new List<Country>();     
         public ICollection<City> Cities { get; set; } = new List<City>();

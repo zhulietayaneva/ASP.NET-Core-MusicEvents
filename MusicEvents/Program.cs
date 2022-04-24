@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MusicEvents.Data;
 using MusicEvents.Infrastructure;
+using MusicEvents.Services.Artists;
 using MusicEvents.Services.Events;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +24,7 @@ builder.Services
                 .AddControllersWithViews();
 
 builder.Services.AddTransient<IEventService, EventService>();
+builder.Services.AddTransient<IArtistService, ArtistService>();
 
 var app = builder.Build();
 

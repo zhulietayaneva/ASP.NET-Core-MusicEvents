@@ -1,4 +1,5 @@
 ﻿using MusicEvents.Data.Models;
+using MusicEvents.Services.Events;
 using System.ComponentModel.DataAnnotations;
 
 namespace MusicEvents.Models.Events
@@ -23,6 +24,6 @@ namespace MusicEvents.Models.Events
 
         public EventSorting SortingType { get; set; }
 
-        public IEnumerable<AllEventsFormModel> Events { get; set; }
+        public IEnumerable<EventServiceModel> Events { get; set; }
     }
 }
