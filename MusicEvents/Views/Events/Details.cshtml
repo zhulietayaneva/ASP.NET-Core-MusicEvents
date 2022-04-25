@@ -1,38 +1,27 @@
-﻿@model ArtistProfileModel
-
-<div class=row>
-
-	<div class=col>
+﻿@model EventProfileModel
 
 
-		<img src="@Model.ImageUrl"/>
 
-	</div>	
-	
-	
-	<div class=col>
-
-		<h2>@Model.ArtistName</h2>
-		<h5>@Model.Biography</h5>
-		<h4>@Model.GenreName</h4>
-		<h2>@Model.NumberOfEvents</h2>
-		
-
-	</div>
-
-	@foreach (var ev in @Model.Events)
-	{
-		<hr />
-		 
-		<h5>@ev.EventName</h5>
-		<h5>@ev.Country.CountryName, @ev.City.CityName</h5>
-		<h5>@ev.Description</h5>
-		<h5>@ev.Time</h5>
-		<h5>@ev.Venue</h5>
-		<img class="img-fluid" src="@ev.ImgURL"/>
-
-
-	}
-
-
+<div class="container px-4 px-lg-5">
+    <!-- Heading Row-->
+    <div class="row gx-4 gx-lg-5 align-items-center my-5">
+        <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="@Model.ImgURL" alt="Image" /></div>
+        <div class="col-lg-5">
+            <h1 class="font-weight-light">@Model.EventName</h1>
+            <p>@Model.Description</p>
+        </div>
+    </div>
+    <!-- Call to Action-->
+    <div class="card text-white bg-secondary my-5 py-4 text-center">
+        <div class="card-body"><p class="text-white m-0">Below are the artists that will attend this event</p></div>
+    </div>
+    <!-- Content Row-->
+    <div class="card" style="width: 18rem; text-align:center;">
+      <img src="@Model.Artists.First().ImageURL" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5>@Model.Artists.First().ArtistName</h5>
+        <p class="card-text b">@Model.Artists.First().Biography</p>
+      </div>
+    </div>
+   
 </div>

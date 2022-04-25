@@ -137,11 +137,98 @@ namespace MusicEvents.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        public IActionResult Details()
+        public IActionResult Details(int id)
         {
-            return View();
+            var artists = data.Artists.Where(e=>e.Events.Select(e=>e.Id).Contains(id));
+            var ev = this.data.Events.Where(a => a.Id == id).First();
+
+            var country = data.Countries.First(c => c.Id == ev.CountryId);
+            var city = data.Cities.First(c => c.Id == ev.CityId);
+            //var artists = data.Artists.ToList();
+
+
+            var res = new EventProfileModel {
+                EventName = ev.EventName,
+                ImgURL = ev.ImgURL,
+                Description=ev.Description,
+                Artists=artists,
+                Id = ev.Id,
+                CityName=ev.City.CityName,
+                CountryName=ev.Country.CountryName,
+                Time=ev.Time, 
+                Venue=ev.Venue 
+            };
+
+            return View(res);
 
         }
+
+        [Authorize]
+        public IActionResult Edit(int id)
+        {
+            var userId = this.data
+           .Organizers
+           .Where(o => o.UserId == this.User.GetId())
+           .Select(o => o.Id)
+           .FirstOrDefault();
+
+             
+            if (!this.UserIsOrganizer())
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
+            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
+
+            var eventForm = this.data.Events.Where(e => e.Id == id)
+                            .Select(e => new AddEventFormModel
+                            {
+                                EventName = e.EventName,
+                                ImgURL = e.ImgURL,
+                                CityId = e.CityId,
+                                Artists = artists,
+                                Time = e.Time,
+                                Venue = e.Venue,
+                                Description = e.Description,
+                                CountryId=e.CountryId,
+                                 
+
+                            }).FirstOrDefault();
+
+            eventForm.Cities = data.Cities.Where(c=>c.CountryId==eventForm.CountryId).ToList();
+            eventForm.Countries = data.Countries.ToList();
+
+            return View(eventForm);
+        }
+
+        [Authorize]
+        [HttpPost] 
+        public IActionResult Edit(int id, AddEventFormModel e)
+        {
+
+            var evData = this.data.Events.Find(id);
+
+            if (evData == null)
+            {
+                return BadRequest();
+            }
+            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
+
+
+            evData.EventName = e.EventName;
+            evData.ImgURL = e.ImgURL;
+            evData.CityId = e.CityId;
+            evData.Artists = artists;
+            evData.Time = e.Time;
+            evData.Venue = e.Venue;
+            evData.Description = e.Description;
+            evData.CountryId = e.CountryId;
+
+            this.data.SaveChanges();
+            return RedirectToAction(nameof(All));
+
+
+        }
+
 
         public IActionResult GetPartialArtists()
         {

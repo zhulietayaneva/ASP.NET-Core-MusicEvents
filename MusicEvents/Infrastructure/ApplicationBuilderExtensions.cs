@@ -44,6 +44,7 @@ namespace MusicEvents.Infrastructure
                 //Console.WriteLine("Country name " + row.Name);
                 curr.Name=row.Name;
 
+
                 foreach (dynamic rowitem in row)
                 {
 
@@ -59,41 +60,60 @@ namespace MusicEvents.Infrastructure
 
             }
 
-            List<Country> countries = countriesAndCities
-                .Select(c => new Country
-                {
-                    CountryName = c.Name,
-                    Cities = c.Cities.Select(city=> new City
-                    {
-                        CityName=city,
+            //List<Country> countries = countriesAndCities
+            //    .Select(c => new Country
+            //    {
+            //        CountryName = c.Name,
+            //        Cities = c.Cities.Select(city=> new City
+            //        {
+            //            CityName=city,
                         
-                    }).ToList(),
-                })
-                .ToList();
-          
-            data.Countries.AddRange(countries);
-            data.SaveChanges();
-            
+                        
+            //        }).ToList(),
+            //    })
+            //    .ToList();
 
-            if (data.Cities.Any())
+            foreach (var country in countriesAndCities)
             {
-                return;
-            }
-            List<City> cities = new List<City>();
-            foreach (var country in data.Countries)
-            { 
-                cities.Clear(); 
+
+                var ctry = new Country() { CountryName=country.Name};
+                data.Countries.Add(ctry);
+                data.SaveChanges();
+                var cts = new List<City>();
                 foreach (var city in country.Cities)
                 {
-                    
-                    
-                    cities.Add(city);
+                    cts.Add(new City { CityName=city, CountryId=ctry.Id});
+                    data.Countries.First(c=>c.Id==ctry.Id).Cities.Add(new City { CityName = city, CountryId = ctry.Id });
+
                 }
+                //data.Countries.Find(ctry).Cities.AddRange(cts);
+                data.Cities.AddRange(cts);
+                data.SaveChanges();
             }
+          
+            //data.Countries.AddRange(countries);
+            //data.SaveChanges();
+            
+
+            //if (data.Cities.Any())
+            //{
+            //    return;
+            //}
+            //List<City> cities = new List<City>();
+            //foreach (var country in data.Countries)
+            //{ 
+            //    cities.Clear(); 
+            //    foreach (var city in country.Cities)
+            //    {
+                    
+                    
+            //        cities.Add(city);
+            //    }
+            //}
 
 
-            data.Cities.AddRange(cities);
-            data.SaveChanges();
+            //data.Cities.AddRange(cities);
+            //data.SaveChanges();
         }
 
         private static void SeedGenres(MusicEventsDbContext data)

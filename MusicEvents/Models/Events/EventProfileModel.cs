@@ -16,8 +16,10 @@ namespace MusicEvents.Models.Events
         public string Description { get; set; }
 
         public string CountryName { get; set; }
+      
 
         public string CityName { get; set; }
+      
 
         public DateTime Time { get; set; }
 

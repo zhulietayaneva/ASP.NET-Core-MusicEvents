@@ -1,12 +1,12 @@
 ﻿@model AddEventFormModel;
 @{
-    ViewData["Title"] = "Add Event";
+    ViewData["Title"] = "Edit Event";
 }
 
 <div class="container">
      <div class="row">
          <div class=" offset-md-2 col-md-8 col-sm-12">
-             <h2 class ="heading-margin text-center">Add Event</h2>
+             <h2 class ="heading-margin text-center">Edit Event</h2>
              <form  method="post" class="row g-3">
 
                 <div class="col-md-6">
@@ -40,7 +40,7 @@
                 
                 <div class="col-md-6">
                  <label asp-for="CityId" class="form-label add-form">City</label>
-                 <select asp-for="CityId" id="CityId" name="CityId" class="form-control" asp-items="@(new SelectList(string.Empty, "CityId", "CityName"))"></select>
+                 <select asp-for="CityId" id="CityId" name="CityId" class="form-control" asp-items="@(new SelectList(@Model.Cities, "Id", "CityName"))"></select>
                 </div>
 
 
@@ -72,13 +72,17 @@
  </div>
 @section Scripts{
 
-<script type="text/javascript">    
-        
-         $(document).ready(function () {           
-           var items = "<option value='0'>Select</option>";
-           $("#CityId").html(items);                               
-        });
+
+<script>
+  $(function () {
+    $('#datetimepicker1').datetimepicker({ 
+      format: 'YYYY-MM-DD HH:mm',
+      useCurrent: true,
+      
+    });
+  });
 </script>
+
 
 <script type="text/javascript"> 
         $(document).ready(function () {
@@ -105,93 +109,6 @@
 </script> 
 
 
-<script type="text/javascript">
-      
-        var myDiv = document.getElementById("loadPartial");
-        var btn = document.getElementById("btn1");
-
-        function addArtist(e){         
-            var newDiv = document.createElement("div");
-            newDiv.style="padding-bottom: 10px;padding-top: 10px;";
-            newDiv.insertAdjacentHTML('beforeend',$(newDiv).load('@Url.Action("GetPartialArtists", "Events")')) ;
-            myDiv.append(newDiv);         
-        }
-       
-</script>
-
-
-<script type="text/javascript">
- 
-      
- 
-       function getSelectedArtist(){
-           alert("esgsgs");
-            var count = 0;
-            var e = document.getElementById("optionAdd");
-            var ad = document.getElementById("artistsDiv");
-            var tb = document.getElementById("textAdd");
-            var strUser = e.options[e.selectedIndex].text;
-            tb.value+=strUser;
-
-            var newDiv = document.createElement("div");
-            newdiv.class ="row g-3";
-
-            var nestedDiv = document.createElement("div");
-            nestedDiv.class="col";
-
-            var input = document.createElement("input");
-            input.setAttribute(type, "text");
-            input.setAttribute(asp-for, "Artists");
-            input.setAttribute(class, "form-control");
-            input.value+=strUser;
-            nestedDiv.appendChild(input);
-
-            newDiv.appendChild(nestedIdv);
-
-            ad.appendChild(newDiv);
-
-            }
-
-            @* 
-            <div class="row g-3">
-              <div class="col">
-                <input type="text" asp-for="Artists" class="form-control" placeholder="Artist name">
-              </div>
-            
-              <div class="col">
-                  <button type="button" class="btn btn-danger" onclick="{(ev) => remove(ev)}" id="btnRemove">-</button>
-              </div>
-            </div>
-            *@
-
-       
-</script>
-
-<script>
-  $(function () {
-    $('#datetimepicker1').datetimepicker({ 
-      format: 'YYYY-MM-DD HH:mm',
-      useCurrent: true,
-      
-    });
-  });
-</script>
-
-@*
-<script type="text/javascript">
-    
-     function remove(ev){
-         alert("sgsge");
-        $(ev.target).parent().parent().remove();
-
-           function remove(ev){
-            alert("aaaa");
-            var divToRemove = ev.target.parentNode.parentNode;
-            myDiv.removeChild(divToRemove);
-        }
-    }
-</script>
-*@
 
  }
 
