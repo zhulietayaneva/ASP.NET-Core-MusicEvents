@@ -6,6 +6,8 @@ namespace MusicEvents.Models.Artists
 {
     public class AddArtistFormModel
     {
+
+
         [Required]
         [MaxLength(ArtistNameMaxLenght)]
         public string ArtistName { get; set; }
@@ -22,6 +24,8 @@ namespace MusicEvents.Models.Artists
         public string ImageURL { get; set; }
         public int CountryId { get; set; }
         public ICollection<Country> Countries { get; set; } = new List<Country>();
+
+       
 
 
     }

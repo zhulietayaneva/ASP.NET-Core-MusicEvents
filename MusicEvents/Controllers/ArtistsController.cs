@@ -4,6 +4,7 @@ using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Artists;
+using MusicEvents.Models.Events;
 using MusicEvents.Services.Artists;
 
 namespace MusicEvents.Controllers
@@ -108,7 +109,8 @@ namespace MusicEvents.Controllers
             var artists = this.artists.All(query.SearchTerm,
                                            query.CountryId,
                                            query.SortingType,
-                                           query.CurrentPage,   AllArtistsQueryModel.ArtistsPerPage,
+                                           query.CurrentPage,
+                                           AllArtistsQueryModel.ArtistsPerPage,
                                            query.GenreId);
 
 
@@ -126,7 +128,22 @@ namespace MusicEvents.Controllers
                this.User.GetId());
 
 
+        public IActionResult Details(ArtistProfileModel model,int id)
+        {
+            var artist = this.data.Artists.Where(a => a.Id == model.Id).First();
+           
+            artist.Genre = data.Genres.Where(g => g.Id == artist.GenreId).FirstOrDefault();
+            var eventsOfCurrArtist = data.Events.Where(e => e.Artists
+                                                            .Select(a => a.Id).Where(a => a == artist.Id).First()
+                                                            == artist.Id).OrderBy(e => e.Time).ToList();
+                                                            
+                                    
 
+            var res = new ArtistProfileModel { ArtistName = artist.ArtistName, ImageUrl = artist.ImageURL, Biography = artist.Biography, Events = artist.Events, GenreName = artist.Genre.GenreName, Id = artist.Id };
+
+
+            return View(res);
+        }
         public IActionResult Delete(int id)
         {
             var ev = this.data.Artists.Where(e => e.Id == id).FirstOrDefault();

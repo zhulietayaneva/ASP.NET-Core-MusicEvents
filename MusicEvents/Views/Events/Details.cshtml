@@ -1,0 +1,38 @@
+﻿@model ArtistProfileModel
+
+<div class=row>
+
+	<div class=col>
+
+
+		<img src="@Model.ImageUrl"/>
+
+	</div>	
+	
+	
+	<div class=col>
+
+		<h2>@Model.ArtistName</h2>
+		<h5>@Model.Biography</h5>
+		<h4>@Model.GenreName</h4>
+		<h2>@Model.NumberOfEvents</h2>
+		
+
+	</div>
+
+	@foreach (var ev in @Model.Events)
+	{
+		<hr />
+		 
+		<h5>@ev.EventName</h5>
+		<h5>@ev.Country.CountryName, @ev.City.CityName</h5>
+		<h5>@ev.Description</h5>
+		<h5>@ev.Time</h5>
+		<h5>@ev.Venue</h5>
+		<img class="img-fluid" src="@ev.ImgURL"/>
+
+
+	}
+
+
+</div>

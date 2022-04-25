@@ -16,7 +16,7 @@ namespace MusicEvents.Services.Artists
         {
             var artistsQuery = data.Artists.AsQueryable();
             var countries = data.Countries.ToList();
-            var totalArtists = this.data.Artists.Count();
+            
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -61,9 +61,9 @@ namespace MusicEvents.Services.Artists
 
              })
              .ToList();
+            var totalArtists = artistsQuery.Count();
 
-
-            return new ArtistsQueryServiceModel { CurrentPage = currentPage, Artists = artists, TotalArtists = totalArtists, ArtistsPerPage = artistsPerPage, GenreId=genreId};
+            return new ArtistsQueryServiceModel { CurrentPage = currentPage, Artists = artists, TotalArtists = totalArtists, ArtistsPerPage = artistsPerPage};
         }
     }
 }

@@ -6,7 +6,7 @@ namespace MusicEvents.Models.Artists
 {
     public class AllArtistsQueryModel
     {
-        public int CurrentPage { get; set; } =1;
+        public int CurrentPage { get; init; } =1;
 
         public const int ArtistsPerPage  = 2;
         public int TotalArtists { get; set; }

@@ -17,7 +17,7 @@ namespace MusicEvents.Services.Events
             
                 var eventsQuery = data.Events.AsQueryable();
                 var countries = data.Countries.ToList();
-                var totalEvents = this.data.Events.Count();
+                
 
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
@@ -63,9 +63,9 @@ namespace MusicEvents.Services.Events
                      Venue = e.Venue
                  })
                  .ToList();
+            var totalEvents = eventsQuery.Count();
 
-
-                return new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage=eventsPerPage};
+            return new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage=eventsPerPage};
             
         }
 
