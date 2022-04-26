@@ -52,18 +52,15 @@
 <div class="row d-flex justify-content-center">
 @foreach (var artists in Model.Artists)
 {
-    <div class="card mb-3 col-3 mx-5 mt-5 mb-5" style="padding-left: 1px;padding-right: 1px;">
-      <img src="@artists.ImageUrl" class="card-img rounded-start " alt="@artists.ArtistName picture" style=" width:300px; height:300px">
-      <div class="card-body ">
-        <h5 class="card-title">@artists.ArtistName</h5>
-        <p class="card-text b @(string.IsNullOrEmpty(artists.Biography)? "d-none": string.Empty)">@artists.Biography</p>
-        <p class="card-text"><small class="text-muted">@artists.NumberOfEvents Events</small> </p>
-        
-                    <a asp-controller="Artists" asp-action="Details" asp-route-id="@artists.Id" class="btn  purple" style="margin-right: 4px;">Artist Profile</a>
-					<a asp-controller="Artists" asp-action="Delete" asp-route-id="@artists.Id" class="btn btn-danger">X</a>
-
-        
-       
+   <div class="card mb-3 col-3 mx-5 mt-5 mb-5" style="padding-left: 1px;padding-right: 1px; width: 18rem; text-align:center;">
+      <img src="@artists.ImageUrl" class="card-img-top img-fluid" style="height:280px; width:auto;" alt="@artists.ArtistName picture">
+      <div class="card-body">
+        <h5>@artists.ArtistName</h5>
+        <p class="card-text b ">@(string.IsNullOrEmpty(artists.Biography)? "This artist has no Biography yet. Ask an organizer to add one.": @artists.Biography)</p>
+        <p class="card-text"><small class="text-muted">@artists.NumberOfEvents Events</small></p>
+        <a asp-controller="Artists" asp-action="Details" asp-route-id="@artists.Id" class="btn  purple" style="margin-right: 4px;">Artist Profile</a>
+        <a asp-controller="Artists" asp-action="Edit" asp-route-id="@artists.Id" class="btn  purple" style="margin-right: 4px;">Edit</a>
+		<a asp-controller="Artists" asp-action="Delete" asp-route-id="@artists.Id" class="btn btn-danger">X</a>
       </div>
     </div>
 }

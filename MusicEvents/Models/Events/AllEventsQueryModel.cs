@@ -9,7 +9,7 @@ namespace MusicEvents.Models.Events
 
         public int TotalEvents { get; set; }
 
-        public const int EventsPerPage = 4;
+        public const int EventsPerPage = 3;
         public int CurrentPage { get; init; } = 1;
 
         [Display(Name = "Search...")]

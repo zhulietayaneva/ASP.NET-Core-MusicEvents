@@ -4,7 +4,6 @@ using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Artists;
-using MusicEvents.Models.Events;
 using MusicEvents.Services.Artists;
 
 namespace MusicEvents.Controllers
@@ -121,6 +120,74 @@ namespace MusicEvents.Controllers
             query.Genres = data.Genres.ToList();
             return View(query);
         }
+
+
+        [Authorize]
+        public IActionResult Edit(int id)
+        {
+            var userId = this.data
+           .Organizers
+           .Where(o => o.UserId == this.User.GetId())
+           .Select(o => o.Id)
+           .FirstOrDefault();
+
+
+            if (!this.UserIsOrganizer())
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
+           
+
+            var artistForm = this.data.Artists.Where(a => a.Id == id)
+                            .Select(a => new AddArtistFormModel
+                            {
+                                ArtistName=a.ArtistName,
+                                Biography=a.Biography,
+                                BirthDate=a.BirthDate,
+                                CountryId=a.CountryId,
+                                GenreId=a.GenreId,
+                                ImageURL=a.ImageURL
+
+
+                            }).FirstOrDefault();
+
+            artistForm.Genres = data.Genres.ToList();
+            artistForm.Countries = data.Countries.ToList();
+
+            return View(artistForm);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult Edit(int id, AddArtistFormModel a)
+        {
+
+            var artist = this.data.Artists.Find(id);
+
+            if (artist == null)
+            {
+                return BadRequest();
+            }
+            
+
+
+            artist.CountryId=a.CountryId;
+            artist.ArtistName=a.ArtistName;
+            artist.Biography=a.Biography;
+            artist.BirthDate = a.BirthDate;
+            artist.GenreId=a.GenreId;
+            artist.ImageURL=a.ImageURL;
+      
+
+            this.data.SaveChanges();
+            return RedirectToAction(nameof(All));
+
+
+        }
+
+
+
+
         private bool UserIsOrganizer()
                => this.data //!
                .Organizers

@@ -50,7 +50,7 @@
                  <span asp-validation-for="Time" class="small text-danger"></span>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-6">
                  <label asp-for="ArtistId" class="form-label add-form" >Choose Artist</label>
                  <select asp-for="ArtistId" id="optionAdd" onchange="getSelectedArtist()" class="form-select" aria-label="Select artist">
                     @foreach (var artist in @Model.Artists)

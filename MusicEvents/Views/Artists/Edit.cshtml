@@ -1,7 +1,7 @@
 ﻿@model AddArtistFormModel
 
 @{
-    ViewData["Title"] = "Add Artist";
+    ViewData["Title"] = "Edit Artist";
 }
 
 
@@ -9,13 +9,13 @@
     <div class="row">
 
         <div class="col-sm-12 offset-md=3 col-md-6 offset-lg-2 col=lg-8 offset-xl-3 col-xl-6">
-            <h2 class="heading-margin" style="text-align:center">Add Artist</h2>
+            <h2 class="heading-margin" style="text-align:center">Edit Artist</h2>
 
             <form method="post">
                
                 <partial name="_AddArtistsPartial"  model="@Model"/>
                 <div style="padding-top: 16px;">
-                    <input class="btn purple" type="submit" value="Add"/>
+                    <input class="btn purple" type="submit" value="Edit"/>
                 </div>
                 
 

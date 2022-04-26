@@ -11,7 +11,8 @@ namespace MusicEvents.Models.Artists
         public int NumberOfEvents => Events.Count;
         public string GenreName { get; set; }
         public string ImageUrl { get; set; }
-        public ICollection<Event> Events{ get; set; }=new List<Event>();
+        public ICollection<Event> Events{ get; set; } =new List<Event>();
+        public ICollection<Song> Songs{ get; set; } = new List<Song>();
 
 
 

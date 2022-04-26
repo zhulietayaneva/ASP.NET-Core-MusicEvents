@@ -8,7 +8,7 @@ namespace MusicEvents.Models.Artists
     {
         public int CurrentPage { get; init; } =1;
 
-        public const int ArtistsPerPage  = 2;
+        public const int ArtistsPerPage  = 3;
         public int TotalArtists { get; set; }
 
         [Display(Name = "Search...")]
