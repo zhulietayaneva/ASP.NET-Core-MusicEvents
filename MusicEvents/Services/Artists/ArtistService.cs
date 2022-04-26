@@ -32,12 +32,17 @@ namespace MusicEvents.Services.Artists
                     .Where(e => e.CountryId == countryId);
             }
 
-            if (artistsQuery.Any(a => a.GenreId == genreId))
-            {
+
+
+            if (genreId!=0)
+            {  
+                
                 artistsQuery =
                     artistsQuery
                     .Where(e => e.GenreId == genreId);
+               
             }
+
 
             artistsQuery = sorting switch
             {

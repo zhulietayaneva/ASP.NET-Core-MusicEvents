@@ -195,10 +195,10 @@ namespace MusicEvents.Controllers
                this.User.GetId());
 
 
-        public IActionResult Details(ArtistProfileModel model,int id)
+        public IActionResult Details(int id)
         {
-            var artist = this.data.Artists.Where(a => a.Id == model.Id).First();
-           
+            var artist = this.data.Artists.Where(a => a.Id == id).First();
+            var songs = data.Songs.Where(s => s.Artists.Select(a => a.Id).Contains(id)).ToList();
             artist.Genre = data.Genres.Where(g => g.Id == artist.GenreId).FirstOrDefault();
             var eventsOfCurrArtist = data.Events.Where(e => e.Artists
                                                             .Select(a => a.Id).Where(a => a == artist.Id).First()

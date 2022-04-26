@@ -211,13 +211,13 @@ namespace MusicEvents.Controllers
             {
                 return BadRequest();
             }
-            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
+            //var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
 
 
             evData.EventName = e.EventName;
             evData.ImgURL = e.ImgURL;
             evData.CityId = e.CityId;
-            evData.Artists = artists;
+            //evData.Artists = artists;
             evData.Time = e.Time;
             evData.Venue = e.Venue;
             evData.Description = e.Description;

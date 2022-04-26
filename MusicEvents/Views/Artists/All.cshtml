@@ -25,7 +25,7 @@
             <div class="form-group">
                 <label asp-for="GenreId"></label>
                 <select asp-for="GenreId" class="form-control">
-                    <option>Choose</option>
+                    <option value=0>Choose</option>
                     @foreach (var genre in Model.Genres)
                     {
                         <option value=@genre.Id>@genre.GenreName</option>
@@ -116,5 +116,5 @@
 </div>
 @if (!Model.Artists.Any())
 {
-    <h2 class="text-center">No artists found by the given criteria!</h2>
+    <h2 class="text-center my-3">No artists found by the given criteria!</h2>
 }
