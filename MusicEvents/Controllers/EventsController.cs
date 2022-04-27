@@ -5,6 +5,7 @@ using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Events;
+using MusicEvents.Services.Countries;
 using MusicEvents.Services.Events;
 
 namespace MusicEvents.Controllers
@@ -13,13 +14,15 @@ namespace MusicEvents.Controllers
     {
         private readonly MusicEventsDbContext data;
         private readonly IEventService events;
+        private readonly ICountryService countries;
 
-        
 
-        public EventsController(MusicEventsDbContext data, IEventService events)
+
+        public EventsController(MusicEventsDbContext data, IEventService events, ICountryService countries)
         {
             this.data = data;
             this.events = events;
+            this.countries = countries;
         }
 
         [Authorize]
@@ -32,28 +35,28 @@ namespace MusicEvents.Controllers
             }
 
 
-    
+
             var res = new AddEventFormModel
             {
-                Countries = data.Countries.ToList(),
-                Artists=data.Artists.OrderBy(a=>a.ArtistName).ToList(),
+                Countries = countries.GetCountries(),
+                Artists = data.Artists.OrderBy(a => a.ArtistName).ToList(),
                 Time = DateTime.UtcNow.Date,
 
             };
             return View(res);
-        } 
+        }
 
 
         [HttpPost]
         [Authorize]
         public IActionResult Add(AddEventFormModel model)
         {
-             var userId = this.data
-            .Organizers
-            .Where(o => o.UserId == this.User.GetId())
-            .Select(o => o.Id)
-            .FirstOrDefault();
-            
+            var userId = this.data
+           .Organizers
+           .Where(o => o.UserId == this.User.GetId())
+           .Select(o => o.Id)
+           .FirstOrDefault();
+
 
             if (!this.UserIsOrganizer())
             {
@@ -68,8 +71,8 @@ namespace MusicEvents.Controllers
 
             if (!ModelState.IsValid)
             {
-                model.Countries = data.Countries.ToList();
-                model.Cities = data.Cities.ToList();
+                model.Countries = countries.GetCountries();
+
                 model.Artists = data.Artists.ToList();
 
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
@@ -78,7 +81,7 @@ namespace MusicEvents.Controllers
             }
 
 
-            var artists = data.Artists.Select(a=>a.ArtistName).ToList();
+            var artists = data.Artists.Select(a => a.ArtistName).ToList();
 
             var curr = new Event
             {
@@ -90,7 +93,7 @@ namespace MusicEvents.Controllers
                 CountryId = model.CountryId,
                 CityId = model.CityId,
                 OrganizerId = userId,
-                Artists= new List<Artist>() { data.Artists.Where(a=>a.Id==model.ArtistId).First() }
+                Artists = new List<Artist>() { data.Artists.Where(a => a.Id == model.ArtistId).First() }
 
             };
 
@@ -101,14 +104,14 @@ namespace MusicEvents.Controllers
             return RedirectToAction(nameof(All));
         }
 
-         private bool UserIsOrganizer()
-                =>this.data //!
-                .Organizers
-                .Any(d => d.UserId==
-                this.User.GetId());
+        private bool UserIsOrganizer()
+               => this.data //!
+               .Organizers
+               .Any(d => d.UserId ==
+               this.User.GetId());
 
 
-      
+
         public IActionResult All([FromQuery] AllEventsQueryModel query)
         {
             var events = this.events.All(query.SearchTerm,
@@ -120,10 +123,10 @@ namespace MusicEvents.Controllers
 
 
 
-            query.Countries = data.Countries.ToList();
+            query.Countries = countries.GetCountries();
             query.TotalEvents = events.TotalEvents;
             query.Events = events.Events;
-          
+
 
             return View(query);
         }
@@ -139,24 +142,25 @@ namespace MusicEvents.Controllers
 
         public IActionResult Details(int id)
         {
-            var artists = data.Artists.Where(e=>e.Events.Select(e=>e.Id).Contains(id));
+            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id));
             var ev = this.data.Events.Where(a => a.Id == id).First();
 
-            var country = data.Countries.First(c => c.Id == ev.CountryId);
+            var country = countries.GetCountries().First(c => c.Id == ev.CountryId);
             var city = data.Cities.First(c => c.Id == ev.CityId);
             //var artists = data.Artists.ToList();
 
 
-            var res = new EventProfileModel {
+            var res = new EventProfileModel
+            {
                 EventName = ev.EventName,
                 ImgURL = ev.ImgURL,
-                Description=ev.Description,
-                Artists=artists,
+                Description = ev.Description,
+                Artists = artists,
                 Id = ev.Id,
-                CityName=ev.City.CityName,
-                CountryName=ev.Country.CountryName,
-                Time=ev.Time, 
-                Venue=ev.Venue 
+                CityName = ev.City.CityName,
+                CountryName = ev.Country.CountryName,
+                Time = ev.Time,
+                Venue = ev.Venue
             };
 
             return View(res);
@@ -172,7 +176,7 @@ namespace MusicEvents.Controllers
            .Select(o => o.Id)
            .FirstOrDefault();
 
-             
+
             if (!this.UserIsOrganizer())
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
@@ -189,19 +193,19 @@ namespace MusicEvents.Controllers
                                 Time = e.Time,
                                 Venue = e.Venue,
                                 Description = e.Description,
-                                CountryId=e.CountryId,
-                                 
+                                CountryId = e.CountryId,
+
 
                             }).FirstOrDefault();
 
-            eventForm.Cities = data.Cities.Where(c=>c.CountryId==eventForm.CountryId).ToList();
-            eventForm.Countries = data.Countries.ToList();
+            eventForm.Cities = data.Cities.Where(c => c.CountryId == eventForm.CountryId).ToList();
+            eventForm.Countries = countries.GetCountries();
 
             return View(eventForm);
         }
 
         [Authorize]
-        [HttpPost] 
+        [HttpPost]
         public IActionResult Edit(int id, AddEventFormModel e)
         {
 
@@ -232,24 +236,19 @@ namespace MusicEvents.Controllers
 
         public IActionResult GetPartialArtists()
         {
-            
+
 
             return PartialView("_ArtistsPartial");
         }
 
-
         public JsonResult GetCities(int CountryId)
         {
-         
-            var res=data.Cities.Where(c => c.CountryId == CountryId).ToList();
-            var t= Json(new SelectList(res,"Id","CityName"));
+
+            var res = data.Cities.Where(c => c.CountryId == CountryId).ToList();
+            var t = Json(new SelectList(res, "Id", "CityName"));
             return t;
         }
 
-        public JsonResult GetCountries()
-        {
-            return Json(new SelectList(data.Countries.ToList(), "Id", "CountryName"));
-        }
 
     }
 }

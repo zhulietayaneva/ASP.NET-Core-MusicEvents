@@ -5,6 +5,7 @@ using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Artists;
 using MusicEvents.Services.Artists;
+using MusicEvents.Services.Countries;
 
 namespace MusicEvents.Controllers
 {
@@ -12,11 +13,13 @@ namespace MusicEvents.Controllers
     {
         private readonly MusicEventsDbContext data;
         private readonly IArtistService artists;
+        private readonly ICountryService countries;
 
-        public ArtistsController(MusicEventsDbContext data, IArtistService artists)
+        public ArtistsController(MusicEventsDbContext data, IArtistService artists, ICountryService countries)
         {
             this.artists = artists;
             this.data = data;
+            this.countries = countries;
         }
 
         [Authorize]
@@ -31,7 +34,7 @@ namespace MusicEvents.Controllers
 
             var res = new AddArtistFormModel
             {
-                Countries = data.Countries.ToList(),
+                Countries = countries.GetCountries(),
                 Genres = data.Genres.ToList(),
                 BirthDate = DateTime.UtcNow.Date,
 
@@ -114,7 +117,7 @@ namespace MusicEvents.Controllers
 
 
 
-            query.Countries = data.Countries.ToList();
+            query.Countries = countries.GetCountries();
             query.TotalArtists = artists.TotalArtists;
             query.Artists = artists.Artists;
             query.Genres = data.Genres.ToList();
@@ -152,7 +155,7 @@ namespace MusicEvents.Controllers
                             }).FirstOrDefault();
 
             artistForm.Genres = data.Genres.ToList();
-            artistForm.Countries = data.Countries.ToList();
+            artistForm.Countries = countries.GetCountries();
 
             return View(artistForm);
         }
@@ -195,22 +198,24 @@ namespace MusicEvents.Controllers
                this.User.GetId());
 
 
-        public IActionResult Details(int id)
+        public IActionResult Details(int artistid)
         {
-            var artist = this.data.Artists.Where(a => a.Id == id).First();
-            var songs = data.Songs.Where(s => s.Artists.Select(a => a.Id).Contains(id)).ToList();
+            var artist = this.data.Artists.Where(a => a.Id == artistid).First();
+            var songs = data.Songs.Where(s => s.Artists.Select(a => a.Id).Contains(artistid)).ToList();
             artist.Genre = data.Genres.Where(g => g.Id == artist.GenreId).FirstOrDefault();
             var eventsOfCurrArtist = data.Events.Where(e => e.Artists
                                                             .Select(a => a.Id).Where(a => a == artist.Id).First()
                                                             == artist.Id).OrderBy(e => e.Time).ToList();
-                                                            
-                                    
 
-            var res = new ArtistProfileModel { ArtistName = artist.ArtistName, ImageUrl = artist.ImageURL, Biography = artist.Biography, Events = artist.Events, GenreName = artist.Genre.GenreName, Id = artist.Id };
+            var country = countries.GetCountries().First(c => c.Id == artist.CountryId);
+
+            var res = new ArtistProfileModel { ArtistName = artist.ArtistName, ImageUrl = artist.ImageURL, Biography = artist.Biography, Events = artist.Events, GenreName = artist.Genre.GenreName, Id = artist.Id, Songs=songs,CountryName=artist.Country.CountryName};
 
 
             return View(res);
         }
+       
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var ev = this.data.Artists.Where(e => e.Id == id).FirstOrDefault();

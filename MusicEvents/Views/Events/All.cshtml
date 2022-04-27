@@ -5,7 +5,7 @@
 
         <div class="form-group col-md-3 p-2">
             <label asp-for="SearchTerm"></label>
-            <input asp-for="SearchTerm" class="form-control" placeholder="Search..." />
+            <input asp-for="SearchTerm" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);" placeholder="Search..." />
         </div>
 
         
@@ -13,7 +13,7 @@
         <div class="form-group col-md-3 p-2">
             <div class="form-group">
                 <label asp-for="SortingType"></label>
-                <select asp-for="SortingType" class="form-control">
+                <select asp-for="SortingType" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);">
                     <option value="0" selected>Newest</option>
                     <option value="1">Date</option>
                     <option value="2">Name</option>
@@ -31,13 +31,15 @@
                  <div class="form-group col-md-3 p-2">
             <div class="form-group">
                  <label asp-for="CountryId" class="form-label">Country</label>
-                 <select asp-for="CountryId" id="CountryId" name="CountryId" class="form-control" asp-items="@(new SelectList(@Model.Countries, "Id", "CountryName"))"></select>
+                 <select asp-for="CountryId" id="CountryId" name="CountryId" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);"
+                 asp-items="@(new SelectList(@Model.Countries, "Id", "CountryName"))"></select>
             </div>
         </div>
         <div class="form-group col-md-3 p-2">
             <div class="form-group">
                <label asp-for="CityId" class="form-label">City</label>
-               <select asp-for="CityId" id="CityId" name="CityId" class="form-control" asp-items="@(new SelectList(string.Empty, "CityId", "CityName"))"></select>
+               <select asp-for="CityId" id="CityId" name="CityId" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);"
+               asp-items="@(new SelectList(string.Empty, "CityId", "CityName"))"></select>
             </div>
         </div>  
 

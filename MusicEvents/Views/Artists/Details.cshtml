@@ -2,25 +2,47 @@
 
 <div class="container px-4 px-lg-5">
     <!-- Heading Row-->
-    <div class="row gx-4 gx-lg-5 align-items-center my-5">
+    <div class="row gx-4 gx-lg-5 align-items-top my-5 ">
           <div class="col-lg-5">
-            <h1 class="font-weight-light">@Model.ArtistName</h1>
+            <h1 class="font-weight-light m-0 mt-5">@Model.ArtistName</h1>
+            <p class="text-muted mb-3"><small>@Model.CountryName</small></p>
             <p>@Model.Biography</p>
-        </div>
-        <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="@Model.ImageUrl" alt="Image" /></div>
-      
-    </div>
+         </div>
+     <div class="col-lg-7">
+         <img class="img-fluid rounded mb-4 mb-lg-0 float-right" src="@Model.ImageUrl" alt="Image" />
+     </div>
+  </div>
+
     <!-- Call to Action-->
-    <div class="card text-white bg-secondary my-5 py-2 text-center">
+    <div class="card text-white bg-secondary my-3 py-1 text-center">
         <div class="card-body"><p class="text-white m-0">@(Model.ArtistName)'s 3 most recent songs</p></div>
     </div>
-    <!-- Content Row-->
-    <div class="card" style="width: 18rem; text-align:center;">
-      <img src="@Model..First().ImageURL" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5>@Model.Songs.First().SongName</h5>
-        <p class="card-text b"></p>
-      </div>
-    </div>
+
+    @if(Model.Songs.Count()==0)
+    {
+              <h5 class="text-center m-5">Currently there is no data for any songs from @Model.ArtistName</h5>  
+    }
+    else
+    {
+        <div class="row d-flex justify-content-center">
+        @foreach (var song in Model.Songs)
+        {
+            <!-- Content Row-->
+              <div class="card mb-2 mx-4 p-0" style="width: 320px; text-align:center;">
+               <iframe class=" d-flex justify-content-center" height="210px" width="320px" src="@song.SongURL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="card-body">
+                    <h5>@song.SongName</h5>
+                    <a asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" asp-route-artistid="@Model.Id" class="btn  btn-danger">X</a>   
+                </div>
+              </div>
+
+        }
+        </div>
+  
+    }
    
 </div>
+
+    <div  class="d-flex justify-content-center m-0">
+    <a asp-controller="Songs" asp-action="Add" asp-route-artistid="@Model.Id" class="btn  purple m-5 " style="margin-right: 2px;">Add a song</a>    
+    </div>

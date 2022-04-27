@@ -13,12 +13,13 @@ namespace MusicEvents.Models.Artists
 
         [Display(Name = "Search...")]
         public string SearchTerm { get; set; }
-
+        [Display(Name = "Choose genre")]
         public int GenreId { get; set; }
-        public ICollection<Genre> Genres { get; set; } = new List<Genre>();
-        public ICollection<Country> Countries { get; set; } = new List<Country>();
+        public IEnumerable<Genre> Genres { get; set; } = new List<Genre>();
+        public IEnumerable<Country> Countries { get; set; } = new List<Country>();
+        [Display(Name = "Choose country")]
         public int CountryId { get; set; }
-
+        [Display(Name = "Sort by...")]
         public ArtistSorting SortingType { get; set; }
 
         public IEnumerable<ArtistServiceModel> Artists { get; set; }

@@ -1,0 +1,67 @@
+﻿@model AddSongFormModel
+@{
+       ViewData["Title"] = "Add Artist";
+}
+
+
+
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-sm-12 offset-md=3 col-md-6 offset-lg-2 col=lg-8 offset-xl-3 col-xl-6">
+            <h2 class="heading-margin" style="text-align:center">Add Artist</h2>
+
+            <form method="post">
+               
+                <div class="form-group add-form">
+                <label asp-for="SongName"></label>
+                <input asp-for="SongName" class="form-control" placeholder="Enter name">
+                <span asp-validation-for="SongName" class="text-danger"></span>
+</div>
+
+
+
+<div class="form-group add-form ">
+    <label asp-for="SongURL"></label>
+    <input asp-for="SongURL" class="form-control" placeholder="Your image Url here">
+    <span asp-validation-for="SongURL" class="text-danger"></span>
+</div>
+
+   <div class="form-group add-form">
+      <label asp-for="ArtistId" class="form-label add-form" >Choose Artist</label>
+      <select asp-for="ArtistId" class="form-select" aria-label="Select artist">
+          <span asp-validation-for="ArtistId" class="text-danger"></span>
+           <option value=0>All</option>
+         @foreach (var artist in @Model.Artists)
+         {
+             <option value=@artist.Id>@artist.ArtistName</option>
+         }
+      </select>
+   </div>
+
+
+<div class="form-group add-form">
+    <div class="form-group">
+        <label asp-for="GenreId"></label>
+        <select asp-for="GenreId" class="form-control">
+            <span asp-validation-for="GenreId" class="text-danger"></span>
+            <option value=0>All</option>
+
+            @foreach (var genre in Model.Genres)
+            {
+                <option value="@genre.Id">@genre.GenreName</option>
+
+            }
+        </select>
+    </div>
+</div>
+                <div style="padding-top: 16px;">
+                    <input class="btn purple" type="submit" value="Add"/>
+                </div>
+                
+
+            </form>
+        </div>
+    </div>
+</div>

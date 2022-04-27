@@ -16,10 +16,10 @@ namespace MusicEvents.Models.Events
         public string SearchTerm { get; set; }
 
 
-        public ICollection<Country> Countries { get; set; } = new List<Country>();
+        public IEnumerable<Country> Countries { get; set; } = new List<Country>();
         public int CountryId { get; set; }
         public int CityId { get; set; }
-        public ICollection<City> Cities { get; set; } = new List<City>();
+        public IEnumerable<City> Cities { get; set; } = new List<City>();
 
 
         public EventSorting SortingType { get; set; }

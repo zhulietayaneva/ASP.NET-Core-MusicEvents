@@ -12,7 +12,7 @@ namespace MusicEvents.Models.Organizers
         public string Name { get; set; }
         [Required]
         [MaxLength(PhoneNumebrMaxLength)]
-
+        [Display(Name = "Enter phone number")]
         public string PhoneNumber { get; set; }
 
     }

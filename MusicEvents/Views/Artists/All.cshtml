@@ -5,13 +5,13 @@
 
         <div class="form-group col-md-3 p-2">
             <label asp-for="SearchTerm"></label>
-            <input asp-for="SearchTerm" class="form-control" placeholder="Search..." />
+            <input asp-for="SearchTerm" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);" placeholder="Search..." />
         </div>
 
         <div class="form-group col-md-3 p-2">
             <div class="form-group">
                 <label asp-for="CountryId"></label>
-                <select asp-for="CountryId" class="form-control">
+                <select asp-for="CountryId" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);">
                     <option value="0" selected>Choose</option>
                     @foreach (var country in Model.Countries)
                     {
@@ -24,7 +24,7 @@
          <div class="form-group col-md-3 p-2">
             <div class="form-group">
                 <label asp-for="GenreId"></label>
-                <select asp-for="GenreId" class="form-control">
+                <select asp-for="GenreId" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);">
                     <option value=0>Choose</option>
                     @foreach (var genre in Model.Genres)
                     {
@@ -37,7 +37,7 @@
         <div class="form-group col-md-3 p-2">
             <div class="form-group">
                 <label asp-for="SortingType"></label>
-                <select asp-for="SortingType" class="form-control">
+                <select asp-for="SortingType" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);">
                     <option value="0" selected>Newest</option>
                     <option value="1">Name</option>
                     <option value="2">Events</option>
@@ -52,7 +52,7 @@
 <div class="row d-flex justify-content-center">
 @foreach (var artists in Model.Artists)
 {
-   <div class="card mb-3 col-3 mx-5 mt-5 mb-5" style="padding-left: 1px;padding-right: 1px; width: 18rem; text-align:center;">
+   <div class="card mb-3 col-3 mx-5 mt-5 mb-5" style="padding-left: 1px;padding-right: 1px; width: 18rem; text-align:center; box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);">
       <img src="@artists.ImageUrl" class="card-img-top img-fluid" style="height:280px; width:auto;" alt="@artists.ArtistName picture">
       <div class="card-body">
         <h5>@artists.ArtistName</h5>
