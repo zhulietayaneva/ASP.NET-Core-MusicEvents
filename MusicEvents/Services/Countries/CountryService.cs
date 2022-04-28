@@ -14,13 +14,25 @@ namespace MusicEvents.Services
         {
             this.data = data;
             this.cache = cache;
+            
         }
+
 
         public IEnumerable<Country> GetCountries()
         {
-            var countryList = data.Countries.ToList();
-            cache.Set("GetCountriesCache", countryList);
-            return cache.Get<IEnumerable<Country>>("GetCountriesCache");
+
+           return  cache.GetOrCreate("GetCountriesCache",
+                                cacheEntry => 
+                                {
+                                    var countries = data.Countries.ToList();
+                                    var options = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(30));
+                                    return cache.Set("GetCountriesCache", countries,options);
+
+                           
+                                }
+                                );
+
+            
         }
     }
 }

@@ -1,4 +1,9 @@
 ﻿@model ArtistProfileModel
+@using Microsoft.AspNetCore.Identity
+@using MusicEvents.Services.Organizers
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@inject IOrganizerService organizers
 
 <div class="container px-4 px-lg-5">
     <!-- Heading Row-->
@@ -32,7 +37,15 @@
                <iframe class=" d-flex justify-content-center" height="210px" width="320px" src="@song.SongURL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 <div class="card-body">
                     <h5>@song.SongName</h5>
-                    <a asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" asp-route-artistid="@Model.Id" class="btn  btn-danger">X</a>   
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            @if (organizers.IsOrganizer(User.GetId()))
+                             {
+                                 <a asp-controller="Songs" asp-action="Delete" asp-route-id="@song.Id" asp-route-artistid="@Model.Id" class="btn  btn-danger">X</a>  
+                             }
+                        }
+
+                     
                 </div>
               </div>
 
@@ -44,5 +57,12 @@
 </div>
 
     <div  class="d-flex justify-content-center m-0">
-    <a asp-controller="Songs" asp-action="Add" asp-route-artistid="@Model.Id" class="btn  purple m-5 " style="margin-right: 2px;">Add a song</a>    
+         @if (SignInManager.IsSignedIn(User))
+         {
+             @if (organizers.IsOrganizer(User.GetId()))
+              {
+                     <a asp-controller="Songs" asp-action="Add" asp-route-artistid="@Model.Id" class="btn  purple m-5 " style="margin-right: 2px;">Add a song</a>    
+              }
+         }
+
     </div>

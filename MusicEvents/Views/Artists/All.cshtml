@@ -1,4 +1,9 @@
 ﻿@model AllArtistsQueryModel
+@inject IOrganizerService organizers
+@using Microsoft.AspNetCore.Identity
+@using MusicEvents.Services.Organizers
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
 <form method="get">
   <div class="d-flex justify-content-center">
@@ -12,7 +17,7 @@
             <div class="form-group">
                 <label asp-for="CountryId"></label>
                 <select asp-for="CountryId" class="form-control" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.2);">
-                    <option value="0" selected>Choose</option>
+                    <option value="0" selected>All</option>
                     @foreach (var country in Model.Countries)
                     {
                         <option value=@country.Id>@country.CountryName</option>
@@ -58,9 +63,21 @@
         <h5>@artists.ArtistName</h5>
         <p class="card-text b ">@(string.IsNullOrEmpty(artists.Biography)? "This artist has no Biography yet. Ask an organizer to add one.": @artists.Biography)</p>
         <p class="card-text"><small class="text-muted">@artists.NumberOfEvents Events</small></p>
-        <a asp-controller="Artists" asp-action="Details" asp-route-id="@artists.Id" class="btn  purple" style="margin-right: 4px;">Artist Profile</a>
-        <a asp-controller="Artists" asp-action="Edit" asp-route-id="@artists.Id" class="btn  purple" style="margin-right: 4px;">Edit</a>
-		<a asp-controller="Artists" asp-action="Delete" asp-route-id="@artists.Id" class="btn btn-danger">X</a>
+
+        <a asp-controller="Artists" asp-action="Details" asp-route-artistid="@artists.Id" class="btn  purple" style="margin-right: 4px;">Artist Profile</a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                     @if (organizers.IsOrganizer(User.GetId()))
+                     {
+                        <a asp-controller="Artists" asp-action="Edit" asp-route-id="@artists.Id" class="btn  purple" style="margin-right: 4px;">Edit</a>
+	                    <a asp-controller="Artists" asp-action="Delete" asp-route-id="@artists.Id" class="btn btn-danger">X</a>
+                     }
+                    
+                }
+
+       
+        
+     
       </div>
     </div>
 }
@@ -91,12 +108,15 @@
     </div>
 
 
-    @if (User.Identity.IsAuthenticated)
-    {
-        <div class="col-md-3 text-center p-2">
-            <a class="btn purple text-black" href="/Artists/Add">Add Event</a>
-        </div>
-    }
+     @if (SignInManager.IsSignedIn(User))
+      {        
+         @if (organizers.IsOrganizer(User.GetId()))
+         {
+             <div class="col-md-3 text-center p-2">
+                 <a class="btn purple text-black" href="/Artists/Add">Add Artist</a>
+             </div>
+         }
+      }
 
 
     @{

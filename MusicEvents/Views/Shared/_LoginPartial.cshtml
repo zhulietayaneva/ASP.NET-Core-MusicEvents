@@ -1,15 +1,32 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using MusicEvents.Services.Organizers
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject IOrganizerService organizers
 
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
+     
+        var userId = User.GetId();
+        var userIsOrganizer = organizers.IsOrganizer(userId);
+      
+        
+
     <li class="nav-item">
         <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Account</a>
-    </li>    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="" asp-controller="Organizers" asp-action="Create" >Become Orgranizator</a>
-    </li>
+    </li>  
+
+
+    @if (!userIsOrganizer)
+    {
+      <li class="nav-item">
+          <a  class="nav-link text-dark" asp-area="" asp-controller="Organizers" asp-action="Create" >Become Orgranizer</a>
+      </li>
+    }
+        
+
+
     <li class="nav-item">
         <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
             <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>

@@ -1,22 +1,25 @@
 ﻿using MusicEvents.Data;
 using MusicEvents.Models;
+using MusicEvents.Services.Countries;
 
 namespace MusicEvents.Services.Events
 {
     public class EventService : IEventService
     {
         private readonly MusicEventsDbContext data;
+        private readonly ICountryService countries;
 
-        public EventService(MusicEventsDbContext data)
+        public EventService(MusicEventsDbContext data, ICountryService countries)
         {
             this.data = data;
+            this.countries = countries;
         }
 
         public EventsQueryServiceModel All(string searchTerm,int countryId, int cityId,EventSorting sorting,int currentPage,int eventsPerPage)
         {
             
                 var eventsQuery = data.Events.AsQueryable();
-                var countries = data.Countries.ToList();
+                var countries = this.countries.GetCountries();
                 
 
                 if (!string.IsNullOrWhiteSpace(searchTerm))
@@ -26,12 +29,17 @@ namespace MusicEvents.Services.Events
                         .Where(e => e.EventName.Contains(searchTerm.ToLower()));
                 }
 
-                if (eventsQuery.Any(a => a.CountryId == countryId))
+                if (eventsQuery.Any(e=>e.CountryId==countryId))
                 {
                     eventsQuery =
                         eventsQuery
                         .Where(e => e.CountryId == countryId);
                 }
+                else if (countryId != 0)
+                {
+                    return new EventsQueryServiceModel { CurrentPage = currentPage, Events = new List<EventServiceModel>(), TotalEvents = 0, EventsPerPage = eventsPerPage };
+                }
+                
 
                 if (eventsQuery.Any(a => a.CityId == cityId))
                 {
@@ -39,8 +47,14 @@ namespace MusicEvents.Services.Events
                         eventsQuery
                         .Where(e => e.CityId == cityId);
                 }
+                 else if (cityId != 0)
+                {
+                    return new EventsQueryServiceModel { CurrentPage = currentPage, Events = new List<EventServiceModel>(), TotalEvents = 0, EventsPerPage = eventsPerPage };
+                }
 
-                eventsQuery = sorting switch
+
+
+            eventsQuery = sorting switch
                 {
                     EventSorting.Date => eventsQuery.OrderBy(g => g.Time),
                     EventSorting.EventName => eventsQuery.OrderBy(g => g.EventName),

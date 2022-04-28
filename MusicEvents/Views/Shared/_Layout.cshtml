@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@inject IOrganizerService organizers
+@using Microsoft.AspNetCore.Identity
+@using MusicEvents.Services.Organizers
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -22,16 +27,27 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="Add">Add Event</a>
-                        </li> 
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            if (organizers.IsOrganizer(User.GetId()))
+                            {
+                            <li class="nav-item">
+                             <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="Add">Add Event</a>
+                            </li> 
                         
+                            <li class="nav-item">
+                             <a class="nav-link text-dark" asp-area="" asp-controller="Artists" asp-action="Add">Add Artist</a>
+                            </li>
+                            }
+                        }
+
+                        
+                        
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="All">All Events</a>
                         </li> 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Artists" asp-action="Add">Add Artist</a>
-                        </li>
+                       
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Artists" asp-action="All">All Artists</a>
                         </li>

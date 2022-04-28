@@ -92,7 +92,7 @@ namespace MusicEvents.Controllers
             data.Songs.Add(curr);
             data.SaveChanges();
 
-            return RedirectToAction("Details", "Artists", artistid);
+            return RedirectToAction("Details", "Artists", new { artistid });
         }
 
         [Authorize]
@@ -102,7 +102,7 @@ namespace MusicEvents.Controllers
             data.Remove(song);
             data.SaveChanges();
 
-            return RedirectToAction("Details","Artists",artistid);
+            return RedirectToAction("Details","Artists", new { artistid });
         }
 
         private bool UserIsOrganizer()

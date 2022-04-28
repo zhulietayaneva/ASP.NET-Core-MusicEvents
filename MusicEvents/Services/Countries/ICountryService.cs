@@ -7,6 +7,5 @@ namespace MusicEvents.Services.Countries
 
         public IEnumerable<Country> GetCountries();
 
-
     }
 }

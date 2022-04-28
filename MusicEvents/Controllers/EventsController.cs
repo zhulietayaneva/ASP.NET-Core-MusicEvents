@@ -5,6 +5,7 @@ using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Events;
+using MusicEvents.Services.Cities;
 using MusicEvents.Services.Countries;
 using MusicEvents.Services.Events;
 
@@ -15,14 +16,16 @@ namespace MusicEvents.Controllers
         private readonly MusicEventsDbContext data;
         private readonly IEventService events;
         private readonly ICountryService countries;
+        private readonly ICityService cities;
 
 
 
-        public EventsController(MusicEventsDbContext data, IEventService events, ICountryService countries)
+        public EventsController(MusicEventsDbContext data, IEventService events, ICountryService countries, ICityService cities)
         {
             this.data = data;
             this.events = events;
             this.countries = countries;
+            this.cities = cities;
         }
 
         [Authorize]
@@ -122,10 +125,12 @@ namespace MusicEvents.Controllers
                                          AllEventsQueryModel.EventsPerPage);
 
 
-
+            var cities = this.cities.GetCitties().Where(c => c.CountryId == query.CountryId);
             query.Countries = countries.GetCountries();
+            query.Cities = cities.Count() == 0 ? new List<City>() : cities;
             query.TotalEvents = events.TotalEvents;
             query.Events = events.Events;
+
 
 
             return View(query);
@@ -243,8 +248,7 @@ namespace MusicEvents.Controllers
 
         public JsonResult GetCities(int CountryId)
         {
-
-            var res = data.Cities.Where(c => c.CountryId == CountryId).ToList();
+            var res = cities.GetCitties().Where(c => c.CountryId == CountryId).ToList();
             var t = Json(new SelectList(res, "Id", "CityName"));
             return t;
         }
