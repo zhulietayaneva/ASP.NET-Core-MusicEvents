@@ -1,11 +1,9 @@
 ﻿using MusicEvents.Controllers;
 using MusicEvents.Data.Models;
-using MusicEvents.Models.Cars;
 using MusicEvents.Models.Organizers;
-using MusicEvents.AspNetCore.Mvc;
+using MyTested.AspNetCore.Mvc;
 using System.Linq;
 using Xunit;
-using static WebConstants;
 
 namespace MusicEvents.Test.Controllers
 {
@@ -15,7 +13,7 @@ namespace MusicEvents.Test.Controllers
         public void GetBecomeShouldBeForAuthorizedUsersAndReturnView()
            => MyController<OrganizersController>
                .Instance()
-               .Calling(c => c.Become())
+               .Calling(c => c.Create())
                .ShouldHave()
                .ActionAttributes(attributes => attributes
                    .RestrictingForAuthorizedRequests())
@@ -28,10 +26,10 @@ namespace MusicEvents.Test.Controllers
         public void PostBecomeShouldBeForAuthorizedUsersAndReturnRedirectWithValidModel(
             string dealerName,
             string phoneNumber)
-            => MyController<DealersController>
+            => MyController<OrganizersController>
                 .Instance(controller => controller
                     .WithUser())
-                .Calling(c => c.Become(new BecomeDealerFormModel
+                .Calling(c => c.Create(new CreateOrganizerFormModel
                 {
                     Name = dealerName,
                     PhoneNumber = phoneNumber
@@ -40,18 +38,6 @@ namespace MusicEvents.Test.Controllers
                 .ActionAttributes(attributes => attributes
                     .RestrictingForHttpMethod(HttpMethod.Post)
                     .RestrictingForAuthorizedRequests())
-                .ValidModelState()
-                .Data(data => data
-                    .WithSet<Dealer>(dealers => dealers
-                        .Any(d =>
-                            d.Name == dealerName &&
-                            d.PhoneNumber == phoneNumber &&
-                            d.UserId == TestUser.Identifier)))
-                .TempData(tempData => tempData
-                    .ContainingEntryWithKey(GlobalMessageKey))
-                .AndAlso()
-                .ShouldReturn()
-                .Redirect(redirect => redirect
-                    .To<CarsController>(c => c.All(With.Any<AllCarsQueryModel>())));
+                .ValidModelState();
     }
 }

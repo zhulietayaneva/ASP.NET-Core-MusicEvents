@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MusicEvents.Data;
@@ -19,8 +20,6 @@ namespace MusicEvents.Controllers
         private readonly ICountryService countries;
         private readonly ICityService cities;
         private readonly IOrganizerService organizers;
-
-
 
         public EventsController(MusicEventsDbContext data, IEventService events, ICountryService countries, ICityService cities, IOrganizerService organizers)
         {
@@ -112,12 +111,17 @@ namespace MusicEvents.Controllers
        
         public IActionResult All([FromQuery] AllEventsQueryModel query)
         {
+
+            var userId = User.Identity.Name==null ? null : User.GetId();
+            
+
             var events = this.events.All(query.SearchTerm,
                                          query.CountryId,
                                          query.CityId,
                                          query.SortingType,
                                          query.CurrentPage,
-                                         AllEventsQueryModel.EventsPerPage);
+                                         AllEventsQueryModel.EventsPerPage,
+                                         userId);
 
 
             var cities = this.cities.GetCitties().Where(c => c.CountryId == query.CountryId);
@@ -191,7 +195,7 @@ namespace MusicEvents.Controllers
 
                             }).FirstOrDefault();
 
-            eventForm.Cities = data.Cities.Where(c => c.CountryId == eventForm.CountryId).ToList();
+            eventForm.Cities = cities.GetCitties().Where(c => c.CountryId == eventForm.CountryId).ToList();
             eventForm.Countries = countries.GetCountries();
 
             return View(eventForm);
@@ -230,6 +234,25 @@ namespace MusicEvents.Controllers
 
         }
 
+        [Authorize]
+        public IActionResult MyEvents([FromQuery] AllEventsQueryModel query)
+        {
+            var events = this.events.MyEvents(query.SearchTerm,
+                                         query.CountryId,
+                                         query.CityId,
+                                         query.SortingType,
+                                         query.CurrentPage,
+                                         AllEventsQueryModel.EventsPerPage,
+                                         User.GetId());
+
+            var cities = this.cities.GetCitties().Where(c => c.CountryId == query.CountryId);
+            query.Countries = countries.GetCountries();
+            query.Cities = cities.Count() == 0 ? new List<City>() : cities;
+            query.TotalEvents = events.TotalEvents;
+            query.Events = events.Events;
+
+            return View(query);
+        }
         public IActionResult GetPartialArtists()
         {
             return PartialView("_ArtistsPartial");

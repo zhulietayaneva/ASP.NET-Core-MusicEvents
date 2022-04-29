@@ -83,14 +83,10 @@
 				<p class="card-text"><small class="text-muted"><i class="fa-solid fa-calendar-days"></i> @ev.Time.ToString("dd.MM.yyyy hh:mm") - <i class="fa-solid fa-location-dot"></i> @ev.CityName, @ev.CountryName</small></p>
 				
 					<a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id" class="btn purple" style=" margin-right: 4px;">Check event</a>
-                     @if (SignInManager.IsSignedIn(User))
-                     {
-                        @if (ev.IsOrganizer)
-                        {
+                     
                            <a asp-controller="Events" asp-action="Edit" asp-route-id="@ev.Id" class="btn purple" style=" margin-right: 4px;">Edit <i class="fa-solid fa-pen"></i></a>
 					       <a asp-controller="Events" asp-action="Delete" asp-route-id="@ev.Id" class="btn btn-danger" style="box-shadow: 0px 4px 5px  rgba(0, 0, 0, 0.4)"><i class="fa-solid fa-trash-can"></i></a>
-                        }
-                     }
+                     
 			</div>
 		</div>
 	</div>
@@ -114,7 +110,7 @@
     <div class="col-md-3 text-center p-2">
         <a class="btn purple text-black @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
            asp-controller="Events"
-           asp-action="All"
+           asp-action="MyEvents"
            asp-route-currentPage="@previousPage"
            asp-route-countryId="@Model.CountryId"
            asp-route-cityId="@Model.CityId"
@@ -126,15 +122,9 @@
 
 
 
-@if (SignInManager.IsSignedIn(User))
-{
-        @if (organizers.IsOrganizer(User.GetId()))
-        {
-             <div class="col-md-3 text-center p-2">
+   <div class="col-md-3 text-center p-2">
              <a class="btn purple text-black " href="/Events/Add">Add Event</a>
              </div>
-        }
- }
 
    
 
@@ -147,7 +137,7 @@
     <div class="col-md-3 text-center p-2">
         <a class="btn purple  text-black  @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
            asp-controller="Events"
-           asp-action="All"
+           asp-action="MyEvents"
            asp-route-currentPage="@(Model.CurrentPage + 1)"
            asp-route-cityId="@Model.CityId"
            asp-route-countryId="@Model.CountryId"

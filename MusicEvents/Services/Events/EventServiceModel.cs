@@ -19,6 +19,8 @@
 
         public DateTime Time { get; set; }
 
+        public bool IsOrganizer { get; set; }
+
 
     }
 }

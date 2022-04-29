@@ -101,7 +101,7 @@ namespace MusicEvents.Controllers
                                            query.GenreId);
 
 
-
+            
             query.Countries = countries.GetCountries();
             query.TotalArtists = artists.TotalArtists;
             query.Artists = artists.Artists;

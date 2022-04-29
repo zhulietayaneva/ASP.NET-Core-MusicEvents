@@ -25,5 +25,7 @@ namespace MusicEvents.Models.Events
         public EventSorting SortingType { get; set; }
 
         public IEnumerable<EventServiceModel> Events { get; set; }
+
+        public bool IsOrganizer { get; set; }
     }
 }

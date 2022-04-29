@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MusicEvents.Infrastructure;
 using MusicEvents.Models.Api;
 using MusicEvents.Services.Events;
 
@@ -19,7 +20,7 @@ namespace MusicEvents.Controllers.Api
         [HttpGet]
         public EventsQueryServiceModel All([FromQuery] AllEventsRequestApiModel query)
         {
-            return this.events.All(query.SearchTerm = null, query.CountryId, query.CityId, query.SortingType, query.CurrentPage, query.EventsPerPage);
+            return this.events.All(query.SearchTerm = null, query.CountryId, query.CityId, query.SortingType, query.CurrentPage, query.EventsPerPage,User.GetId());
         }
     }
 }
