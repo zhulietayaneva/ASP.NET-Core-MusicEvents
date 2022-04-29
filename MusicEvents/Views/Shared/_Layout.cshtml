@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MusicEvents.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
 </head>
 <body>
     <header>
@@ -21,41 +22,57 @@
                     <img class="logo" src="~/Assets/Logo/logo.svg">
                 </a>
                 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            if (organizers.IsOrganizer(User.GetId()))
-                            {
-                            <li class="nav-item">
-                             <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="Add">Add Event</a>
-                            </li> 
-                        
-                            <li class="nav-item">
-                             <a class="nav-link text-dark" asp-area="" asp-controller="Artists" asp-action="Add">Add Artist</a>
-                            </li>
-                            }
-                        }
-
-                        
-                        
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Events" asp-action="All">All Events</a>
-                        </li> 
-                       
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Artists" asp-action="All">All Artists</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDarkDropdown" aria-controls="navbarNavDarkDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavDarkDropdown">
+                      <ul class="navbar-nav">
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Events
+                          </a>
+                          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                             @if (SignInManager.IsSignedIn(User))
+                             {
+                               if (organizers.IsOrganizer(User.GetId()))
+                               {
+                               <li class="dropdown-item">
+                                <a class="dropdown-item" asp-area="" asp-controller="Events" asp-action="Add">Add Event</a>
+                               </li> 
+                               }
+                              }
+                             
+                              <li class="dropdown-item">
+                                  <a class="dropdown-item" asp-area="" asp-controller="Events" asp-action="All">All Events</a>
+                              </li>
+                          </ul>
                         </li>
-                       
-                    </ul>
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Artists
+                          </a>
+                          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                             @if (SignInManager.IsSignedIn(User))
+                             {
+                               if (organizers.IsOrganizer(User.GetId()))
+                               {
+                                 <li class="dropdown-item">
+                                  <a class="dropdown-item" asp-area="" asp-controller="Artists" asp-action="Add">Add Artist</a>
+                                 </li> 
+                               }
+                              }
+                             
+                              <li class="dropdown-item">
+                                  <a class="dropdown-item" asp-area="" asp-controller="Artists" asp-action="All">All Artists</a>
+                              </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>  
+                                         
                     <partial name="_LoginPartial"/>
                 </div>
-            </div>
+           
         </nav>
     </header>
     <div class="container">

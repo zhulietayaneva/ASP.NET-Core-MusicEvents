@@ -7,7 +7,8 @@
     <div class="row gx-4 gx-lg-5 align-items-center my-5">
         <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="@Model.ImgURL" alt="Image" /></div>
         <div class="col-lg-5">
-            <h1 class="font-weight-light">@Model.EventName</h1>
+            <h1 class="font-weight-light m-0 mt-5">@Model.EventName</h1>
+            <p class="text-muted mb-3"><small><i class="fa-solid fa-location-dot"></i> @Model.CountryName - @Model.CityName</small></p>
             <p>@Model.Description</p>
         </div>
     </div>
@@ -16,8 +17,8 @@
         <div class="card-body"><p class="text-white m-0">Below are the artists that will attend this event</p></div>
     </div>
     <!-- Content Row-->
-    <div class="card" style="width: 18rem; text-align:center;">
-      <img src="@Model.Artists.First().ImageURL" class="card-img-top" alt="...">
+    <div class="card m-4" style="width: 18rem; text-align:center;">
+      <a asp-action="Details"></a><img src="@Model.Artists.First().ImageURL" class="card-img-top" alt="...">
       <div class="card-body">
         <h5>@Model.Artists.First().ArtistName</h5>
         <p class="card-text b">@Model.Artists.First().Biography</p>

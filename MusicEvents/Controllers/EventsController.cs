@@ -8,6 +8,7 @@ using MusicEvents.Models.Events;
 using MusicEvents.Services.Cities;
 using MusicEvents.Services.Countries;
 using MusicEvents.Services.Events;
+using MusicEvents.Services.Organizers;
 
 namespace MusicEvents.Controllers
 {
@@ -17,22 +18,24 @@ namespace MusicEvents.Controllers
         private readonly IEventService events;
         private readonly ICountryService countries;
         private readonly ICityService cities;
+        private readonly IOrganizerService organizers;
 
 
 
-        public EventsController(MusicEventsDbContext data, IEventService events, ICountryService countries, ICityService cities)
+        public EventsController(MusicEventsDbContext data, IEventService events, ICountryService countries, ICityService cities, IOrganizerService organizers)
         {
             this.data = data;
             this.events = events;
             this.countries = countries;
             this.cities = cities;
+            this.organizers = organizers;
         }
 
         [Authorize]
         public IActionResult Add()
         {
 
-            if (!this.UserIsOrganizer())
+            if (!organizers.IsOrganizer(User.GetId()))
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
@@ -55,13 +58,12 @@ namespace MusicEvents.Controllers
         public IActionResult Add(AddEventFormModel model)
         {
             var userId = this.data
-           .Organizers
-           .Where(o => o.UserId == this.User.GetId())
-           .Select(o => o.Id)
-           .FirstOrDefault();
+          .Organizers
+          .Where(o => o.UserId == this.User.GetId())
+          .Select(o => o.Id)
+          .FirstOrDefault();
 
-
-            if (!this.UserIsOrganizer())
+            if (!organizers.IsOrganizer(User.GetId()))
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
@@ -107,14 +109,7 @@ namespace MusicEvents.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        private bool UserIsOrganizer()
-               => this.data //!
-               .Organizers
-               .Any(d => d.UserId ==
-               this.User.GetId());
-
-
-
+       
         public IActionResult All([FromQuery] AllEventsQueryModel query)
         {
             var events = this.events.All(query.SearchTerm,
@@ -162,8 +157,8 @@ namespace MusicEvents.Controllers
                 Description = ev.Description,
                 Artists = artists,
                 Id = ev.Id,
-                CityName = ev.City.CityName,
-                CountryName = ev.Country.CountryName,
+                CityName = city.CityName,
+                CountryName = country.CountryName,
                 Time = ev.Time,
                 Venue = ev.Venue
             };
@@ -175,14 +170,7 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Edit(int id)
         {
-            var userId = this.data
-           .Organizers
-           .Where(o => o.UserId == this.User.GetId())
-           .Select(o => o.Id)
-           .FirstOrDefault();
-
-
-            if (!this.UserIsOrganizer())
+            if (!organizers.IsOrganizer(User.GetId()))
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
@@ -213,6 +201,10 @@ namespace MusicEvents.Controllers
         [HttpPost]
         public IActionResult Edit(int id, AddEventFormModel e)
         {
+            if (!organizers.IsOrganizer(User.GetId()))
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
 
             var evData = this.data.Events.Find(id);
 
@@ -238,11 +230,8 @@ namespace MusicEvents.Controllers
 
         }
 
-
         public IActionResult GetPartialArtists()
         {
-
-
             return PartialView("_ArtistsPartial");
         }
 

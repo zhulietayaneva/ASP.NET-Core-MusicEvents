@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicEvents.Data;
+using MusicEvents.Infrastructure;
 using MusicEvents.Models.Artists;
 using MusicEvents.Services.Artists;
 using MusicEvents.Services.Countries;
@@ -26,6 +27,10 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Add()
         {
+            if (!organizers.IsOrganizer(User.GetId()))
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
 
             var res = new AddArtistFormModel
             {
@@ -42,6 +47,10 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Add(AddArtistFormModel model)
         {
+            if (!organizers.IsOrganizer(User.GetId()))
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
 
 
             if (!this.data.Countries.Any(c => c.Id == model.CountryId))
@@ -104,6 +113,10 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Edit(int id)
         {
+            if (!organizers.IsOrganizer(User.GetId()))
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
             return View(artists.Edit(id));
         }
 
@@ -111,6 +124,10 @@ namespace MusicEvents.Controllers
         [HttpPost]
         public IActionResult Edit(int id, AddArtistFormModel a)
         {
+            if (!organizers.IsOrganizer(User.GetId()))
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
             artists.Edit(a, id);
             return RedirectToAction(nameof(All));
         }
@@ -123,6 +140,10 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Delete(int id)
         {
+            if (!organizers.IsOrganizer(User.GetId()))
+            {
+                return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
+            }
             var ev = this.data.Artists.Where(e => e.Id == id).FirstOrDefault();
             data.Remove(ev);
             data.SaveChanges();

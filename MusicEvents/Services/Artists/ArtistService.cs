@@ -21,11 +21,11 @@ namespace MusicEvents.Services.Artists
             this.organizers = organizers;
         }
 
-        public ArtistsQueryServiceModel All(string searchTerm, int countryId,  ArtistSorting sorting, int currentPage, int artistsPerPage,int genreId)
+        public ArtistsQueryServiceModel All(string searchTerm, int countryId, ArtistSorting sorting, int currentPage, int artistsPerPage, int genreId)
         {
             var artistsQuery = data.Artists.AsQueryable();
             var countries = this.countries.GetCountries();
-            
+
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -56,13 +56,10 @@ namespace MusicEvents.Services.Artists
                 return new ArtistsQueryServiceModel { CurrentPage = currentPage, Artists = new List<ArtistServiceModel>(), TotalArtists = 0, ArtistsPerPage = artistsPerPage };
             }
 
-            
-
-
             artistsQuery = sorting switch
             {
-                ArtistSorting.TotalEvents => artistsQuery.OrderByDescending(a=>a.Events.Count).Where(e=>e.Events.Count>0),
-                ArtistSorting.Id  => artistsQuery.OrderByDescending(a => a.Id),
+                ArtistSorting.TotalEvents => artistsQuery.OrderByDescending(a => a.Events.Count).Where(e => e.Events.Count > 0),
+                ArtistSorting.Id => artistsQuery.OrderByDescending(a => a.Id),
                 ArtistSorting.Name or _ => artistsQuery.OrderBy(a => a.ArtistName)
             };
 
@@ -73,23 +70,23 @@ namespace MusicEvents.Services.Artists
              {
                  Id = e.Id,
                  CountryName = e.Country.CountryName,
-                 ArtistName=e.ArtistName,
-                 GenreName=e.Genre.GenreName,       
-                 Biography=e.Biography,
-                 ImageUrl=e.ImageURL,
-                 NumberOfEvents=e.Events.Count
+                 ArtistName = e.ArtistName,
+                 GenreName = e.Genre.GenreName,
+                 Biography = e.Biography,
+                 ImageUrl = e.ImageURL,
+                 NumberOfEvents = e.Events.Count
 
              })
              .ToList();
             var totalArtists = artistsQuery.Count();
 
-            return new ArtistsQueryServiceModel { CurrentPage = currentPage, Artists = artists, TotalArtists = totalArtists, ArtistsPerPage = artistsPerPage};
+            return new ArtistsQueryServiceModel { CurrentPage = currentPage, Artists = artists, TotalArtists = totalArtists, ArtistsPerPage = artistsPerPage };
         }
 
 
-        public void Add(string artistName,string? biography,DateTime birthDate, int countryId,int genreId, string imageUrl)
+        public void Add(string artistName, string? biography, DateTime birthDate, int countryId, int genreId, string imageUrl)
         {
-           
+
             var curr = new Artist
             {
                 ArtistName = artistName,
@@ -126,7 +123,7 @@ namespace MusicEvents.Services.Artists
             return artistForm;
         }
 
-        public void Edit(AddArtistFormModel a,int id)
+        public void Edit(AddArtistFormModel a, int id)
         {
             var artist = this.data.Artists.Find(id);
 
