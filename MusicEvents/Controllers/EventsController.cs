@@ -36,27 +36,14 @@ namespace MusicEvents.Controllers
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
-
-            var res = new AddEventFormModel
-            {
-                Countries = countries.GetCountries(),
-                Artists = data.Artists.OrderBy(a => a.ArtistName).ToList(),
-                Time = DateTime.UtcNow.Date,
-
-            };
-            return View(res);
+            
+            return View(events.Add());
         }
 
         [HttpPost]
         [Authorize]
         public IActionResult Add(AddEventFormModel model)
         {
-            var userId = this.data
-                             .Organizers
-                             .Where(o => o.UserId == this.User.GetId())
-                             .Select(o => o.Id)
-                             .FirstOrDefault();
-
             if (!organizers.IsOrganizer(User.GetId()))
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
@@ -79,24 +66,15 @@ namespace MusicEvents.Controllers
 
             }
 
-
-            var curr = new Event
-            {
-                EventName = model.EventName,
-                Venue = model.Venue,
-                Description = model.Description,
-                ImgURL = model.ImgURL,
-                Time = model.Time,
-                CountryId = model.CountryId,
-                CityId = model.CityId,
-                OrganizerId = userId,
-                Artists = new List<Artist>() { data.Artists.Where(a => a.Id == model.ArtistId).First() }
-
-            };
-
-
-            this.data.Events.Add(curr);
-            this.data.SaveChanges();
+            events.Add(model.EventName,
+                       model.Venue,
+                       model.Description,
+                       model.ImgURL,
+                       model.Time,
+                       model.CountryId,
+                       model.CityId,
+                       User.GetId(),
+                       model.ArtistId);
 
             return RedirectToAction(nameof(All));
         }
@@ -123,36 +101,13 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Delete(int id)
         {
-            var ev = this.data.Events.Where(e => e.Id == id).FirstOrDefault();
-            data.Remove(ev);
-            data.SaveChanges();
-
+            events.Delete(id);
             return RedirectToAction(nameof(All));
         }
 
         public IActionResult Details(int id)
         {
-            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id));
-            var ev = this.data.Events.Where(a => a.Id == id).First();
-
-           
-            
-
-            var res = new EventProfileModel
-            {
-                EventName = ev.EventName,
-                ImgURL = ev.ImgURL,
-                Description = ev.Description,
-                Artists = artists,
-                Id = ev.Id,
-                CityName = ev.City.CityName,
-                CountryName = ev.Country.CountryName,
-                Time = ev.Time,
-                Venue = ev.Venue
-            };
-
-            return View(res);
-
+            return View(events.Details(id));
         }
 
         [Authorize]
@@ -162,26 +117,8 @@ namespace MusicEvents.Controllers
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
-            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
-
-            var eventForm = this.data.Events.Where(e => e.Id == id)
-                            .Select(e => new AddEventFormModel
-                            {
-                               EventName = e.EventName,
-                               ImgURL = e.ImgURL,
-                               CityId = e.CityId,
-                               Artists = artists,
-                               Time = e.Time,
-                               Venue = e.Venue,
-                               Description = e.Description,
-                               CountryId = e.CountryId
-
-                            }).FirstOrDefault();
-
-            eventForm.Cities = cities.GetCitties().Where(c => c.CountryId == eventForm.CountryId).ToList();
-            eventForm.Countries = countries.GetCountries();
-
-            return View(eventForm);
+            
+            return View(events.Edit(id));
         }
 
         [Authorize]
@@ -193,25 +130,13 @@ namespace MusicEvents.Controllers
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
 
-            var evData = this.data.Events.Find(id);
+            var evData=events.Edit(id,e.EventName,e.ImgURL,e.CityId,e.Time,e.Venue,e.Description,e.CountryId);
 
             if (evData == null)
             {
                 return BadRequest();
             }
-            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
-
-
-            evData.EventName = e.EventName;
-            evData.ImgURL = e.ImgURL;
-            evData.CityId = e.CityId;
-            evData.Artists = artists;
-            evData.Time = e.Time;
-            evData.Venue = e.Venue;
-            evData.Description = e.Description;
-            evData.CountryId = e.CountryId;
-
-            this.data.SaveChanges();
+            
             return RedirectToAction(nameof(All));
 
 

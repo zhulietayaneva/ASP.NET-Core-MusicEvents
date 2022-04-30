@@ -1,5 +1,8 @@
 ﻿using MusicEvents.Data;
+using MusicEvents.Data.Models;
 using MusicEvents.Models;
+using MusicEvents.Models.Events;
+using MusicEvents.Services.Cities;
 using MusicEvents.Services.Countries;
 using MusicEvents.Services.Organizers;
 
@@ -8,14 +11,16 @@ namespace MusicEvents.Services.Events
     public class EventService : IEventService
     {
         private readonly MusicEventsDbContext data;
-        private readonly ICountryService countries;
         private readonly IOrganizerService organizers;
+        private readonly ICountryService countries;
+        private readonly ICityService cities;
 
-        public EventService(MusicEventsDbContext data, ICountryService countries, IOrganizerService organizers)
+        public EventService(MusicEventsDbContext data, ICountryService countries, IOrganizerService organizers, ICityService cities)
         {
             this.data = data;
             this.countries = countries;
             this.organizers = organizers;
+            this.cities = cities;
         }
         public EventsQueryServiceModel All(string searchTerm,int countryId, int cityId,EventSorting sorting,int currentPage,int eventsPerPage,string? userId)
         {
@@ -146,6 +151,103 @@ namespace MusicEvents.Services.Events
              var totalEvents = eventsQuery.Count();
 
              return  new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage = eventsPerPage };
+        }
+        public AddEventFormModel Add()
+        {
+            return new AddEventFormModel
+            {
+                Countries = countries.GetCountries(),
+                Artists = data.Artists.OrderBy(a => a.ArtistName).ToList(),
+                Time = DateTime.UtcNow.Date
+            };
+        }
+        public void Add(string eventName,string venue,string? description, string ImgUrl,DateTime time, int countryId,int cityId, string userId,int artistId)
+        {
+            var curr = new Event
+            {
+                EventName = eventName,
+                Venue = venue,
+                Description = description,
+                ImgURL = ImgUrl,
+                Time = time,
+                CountryId = countryId,
+                CityId = cityId,
+                OrganizerId = organizers.GetOrganizerId(userId),
+                Artists = new List<Artist>() { data.Artists.Where(a => a.Id == artistId).First() }
+            };
+
+
+            this.data.Events.Add(curr);
+            this.data.SaveChanges();
+        }
+        public void Delete(int id)
+        {
+            var ev = this.data.Events.Where(e => e.Id == id).FirstOrDefault();
+            data.Remove(ev);
+            data.SaveChanges();
+        }
+        public EventProfileModel Details(int id)
+        {
+            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id));
+            var ev = this.data.Events.Where(a => a.Id == id).First();
+            return new EventProfileModel
+            {
+                EventName = ev.EventName,
+                ImgURL = ev.ImgURL,
+                Description = ev.Description,
+                Artists = artists,
+                Id = ev.Id,
+                CityName = ev.City.CityName,
+                CountryName = ev.Country.CountryName,
+                Time = ev.Time,
+                Venue = ev.Venue
+            };
+        }
+        public AddEventFormModel Edit(int id)
+        {
+            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
+
+            var eventForm = this.data.Events.Where(e => e.Id == id)
+                                            .Select(e => new AddEventFormModel
+                                            {
+                                                EventName = e.EventName,
+                                                ImgURL = e.ImgURL,
+                                                CityId = e.CityId,
+                                                Artists = artists,
+                                                Time = e.Time,
+                                                Venue = e.Venue,
+                                                Description = e.Description,
+                                                CountryId = e.CountryId
+
+                                            }).FirstOrDefault();
+
+            eventForm.Cities = cities.GetCitties().Where(c => c.CountryId == eventForm.CountryId).ToList();
+            eventForm.Countries = countries.GetCountries();
+
+            return eventForm;
+        }
+
+        public Event Edit(int id, string evName,string ImgUrl,int cityId,DateTime time,string venue,string? description, int countryId)
+        {
+            var evData = this.data.Events.Find(id);
+            if (evData==null)
+            {
+                return null;
+            }
+            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
+
+
+            evData.EventName = evName;
+            evData.ImgURL = ImgUrl;
+            evData.CityId = cityId;
+            evData.Artists = artists;
+            evData.Time = time;
+            evData.Venue = venue;
+            evData.Description = description;
+            evData.CountryId = countryId;
+
+            this.data.SaveChanges();
+            return evData;
         }
 
     }

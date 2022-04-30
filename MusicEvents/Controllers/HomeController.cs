@@ -36,9 +36,6 @@ namespace MusicEvents.Controllers
                 .Take(3)
                 .ToList();
 
-
-       
-
             return View(songs);
          
         }

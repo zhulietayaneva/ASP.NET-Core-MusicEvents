@@ -5,6 +5,7 @@ using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Songs;
 using MusicEvents.Services.Organizers;
+using MusicEvents.Services.Songs;
 
 namespace MusicEvents.Controllers
 {
@@ -13,10 +14,13 @@ namespace MusicEvents.Controllers
 
         private readonly MusicEventsDbContext data;
         private readonly IOrganizerService organizers;
+        private readonly ISongService songs;
 
-        public SongsController(MusicEventsDbContext data)
+        public SongsController(MusicEventsDbContext data, IOrganizerService organizers, ISongService songs)
         {
             this.data = data;
+            this.organizers = organizers;
+            this.songs = songs;
         }
 
         [Authorize]
@@ -27,14 +31,7 @@ namespace MusicEvents.Controllers
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
 
-            var res = new AddSongFormModel
-            {
-                Genres = data.Genres.ToList(),
-                Artists= data.Artists.ToList(),
-                ArtistId = artistid
-
-            };
-            return View(res);
+           return View(this.songs.Add(artistid));
         }
          
         [Authorize]
@@ -70,18 +67,7 @@ namespace MusicEvents.Controllers
 
             }
 
-            var artist = data.Artists.First(a=>a.Id==model.ArtistId);
-            var curr = new Song
-            {
-                SongName = model.SongName,
-                Artists = new List<Artist>() { artist },
-                GenreId = model.GenreId,
-                SongURL = model.SongURL
-            };
-
-
-            data.Songs.Add(curr);
-            data.SaveChanges();
+            songs.Add(artistid, model.SongName, model.GenreId, model.SongURL);
 
             return RedirectToAction("Details", "Artists", new { artistid });
         }
@@ -89,13 +75,9 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Delete(int id,int artistid)
         {
-            var song = this.data.Songs.Where(e => e.Id == id).FirstOrDefault();
-            data.Remove(song);
-            data.SaveChanges();
-
+            songs.Delete(id);
             return RedirectToAction("Details","Artists", new { artistid });
         }
-
         
     }
 }
