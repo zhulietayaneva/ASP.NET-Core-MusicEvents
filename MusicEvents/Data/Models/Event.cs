@@ -15,23 +15,23 @@ namespace MusicEvents.Data.Models
         [MaxLength(VenueNameMaxLength)]
         public string Venue { get; set; }
         [Required]
-        public ICollection<Artist> Artists { get; set; } = new List<Artist>();
+        public virtual ICollection<Artist> Artists { get; set; } = new List<Artist>();
         [Required]
         [Url]
         public string ImgURL { get; set; }
         
         public string? Description { get; set; }
 
-        public Country Country { get; set; }
+        public virtual Country Country { get; set; }
         public int CountryId { get; set; }
 
-        public City City { get; set; }
+        public virtual City City { get; set; }
         public int CityId { get; set; }
 
         public DateTime Time { get; set; }
 
         public int OrganizerId { get; set; }
-        public Organizer Organizer { get; set; }
+        public virtual Organizer Organizer { get; set; }
 
     }
 }

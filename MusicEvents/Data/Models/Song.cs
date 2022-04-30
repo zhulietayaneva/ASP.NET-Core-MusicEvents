@@ -11,12 +11,12 @@ namespace MusicEvents.Data.Models
         [MaxLength(SongNameMaxLenght)]
         public string SongName { get; set; }
 
-        public Genre Genre { get; set; }
+        public virtual Genre Genre { get; set; }
         public int GenreId { get; set; }
         [Required]
         [Url]
         public string SongURL { get; set; }
 
-        public ICollection<Artist> Artists { get; set; } = new List<Artist>();
+        public virtual ICollection<Artist> Artists { get; set; } = new List<Artist>();
     }
 }

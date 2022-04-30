@@ -10,7 +10,7 @@ namespace MusicEvents.Data.Models
         [MaxLength(ArtistNameMaxLenght)]
         public string ArtistName { get; set; }
         
-        public Genre Genre { get; set; }
+        public virtual Genre Genre { get; set; }
         public int GenreId { get; set; }    
         
         public DateTime BirthDate { get; set; }
@@ -22,11 +22,11 @@ namespace MusicEvents.Data.Models
         [Url]
         public string ImageURL { get; set; }
 
-        public Country Country { get; set; }
+        public virtual Country Country { get; set; }
         public int CountryId { get; set; }
 
-        public ICollection<Event> Events { get; set; } = new List<Event>();
-        public ICollection<Song> Songs { get; set; } = new List<Song>();
+        public virtual ICollection<Event> Events { get; set; } = new List<Event>();
+        public virtual ICollection<Song> Songs { get; set; } = new List<Song>();
 
      
     }

@@ -9,8 +9,8 @@ namespace MusicEvents.Data.Models
         [Required]
         [MaxLength(CityNameMaxLenght)]
         public string CityName { get; set; }
-        public Country Country { get; set; }
+        public virtual Country Country { get; set; }
         public int CountryId { get; set; }
-        public ICollection<Event> Events { get; set; } = new List<Event>();
+        public virtual ICollection<Event> Events { get; set; } = new List<Event>();
     }
 }

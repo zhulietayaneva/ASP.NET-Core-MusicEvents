@@ -21,9 +21,7 @@ namespace MusicEvents.Services.Events
         {
             
                 var eventsQuery = data.Events.AsQueryable();
-                var countries = this.countries.GetCountries();
                 
-
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
                     eventsQuery =
@@ -49,12 +47,13 @@ namespace MusicEvents.Services.Events
                         eventsQuery
                         .Where(e => e.CityId == cityId);
                 }
-                 else if (cityId != 0)
+                else if (cityId != 0)
                 {
                     return new EventsQueryServiceModel { CurrentPage = currentPage, Events = new List<EventServiceModel>(), TotalEvents = 0, EventsPerPage = eventsPerPage };
                 }
 
-            eventsQuery = sorting switch
+
+                eventsQuery = sorting switch
                 {
                     EventSorting.Date => eventsQuery.OrderBy(g => g.Time),
                     EventSorting.EventName => eventsQuery.OrderBy(g => g.EventName),
@@ -78,16 +77,16 @@ namespace MusicEvents.Services.Events
                      IsOrganizer=organizers.IsEvOrganizer(e.Id,userId)
                  })
                  .ToList();
-            var totalEvents = eventsQuery.Count();
 
-            return new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage=eventsPerPage};
+                 var totalEvents = eventsQuery.Count();
+
+                 return new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage=eventsPerPage };
             
         }
         public EventsQueryServiceModel MyEvents(string searchTerm, int countryId, int cityId, EventSorting sorting, int currentPage, int eventsPerPage, string userId)
         {
             var eventsQuery = data.Events.Where(e => e.OrganizerId == organizers.GetOrganizerId(userId)).AsQueryable();
-            var countries = this.countries.GetCountries();
-
+            
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 eventsQuery =
@@ -143,9 +142,10 @@ namespace MusicEvents.Services.Events
                
              })
              .ToList();
-            var totalEvents = eventsQuery.Count();
 
-            return  new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage = eventsPerPage };
+             var totalEvents = eventsQuery.Count();
+
+             return  new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage = eventsPerPage };
         }
 
     }

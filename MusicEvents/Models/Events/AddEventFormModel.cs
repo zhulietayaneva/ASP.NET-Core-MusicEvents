@@ -34,9 +34,9 @@ namespace MusicEvents.Models.Events
         [Required(ErrorMessage = "Event date and time are required")]
         [DateLessOrEqualToToday]
         public DateTime Time { get; set; }
-        public IEnumerable<Country> Countries { get; set; } = new List<Country>();     
-        public IEnumerable<City> Cities { get; set; } = new List<City>();
-        public IEnumerable<Artist> Artists { get; set; } = new List<Artist>();
+        public  IEnumerable<Country> Countries { get; set; } = new List<Country>();     
+        public  IEnumerable<City> Cities { get; set; } = new List<City>();
+        public  IEnumerable<Artist> Artists { get; set; } = new List<Artist>();
         public int ArtistId { get; set; }
     }
 }

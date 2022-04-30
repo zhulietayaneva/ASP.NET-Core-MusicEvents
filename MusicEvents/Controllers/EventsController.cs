@@ -62,7 +62,7 @@ namespace MusicEvents.Controllers
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
 
-            if (!this.data.Cities.Any(c => c.Id == model.CityId) || !this.data.Countries.Any(c => c.Id == model.CountryId))
+            if (!this.cities.GetCitties().Any(c => c.Id == model.CityId) || !this.countries.GetCountries().Any(c => c.Id == model.CountryId))
             {
                 this.ModelState.AddModelError(nameof(model.CountryId), "Select a valid place");
 
@@ -80,13 +80,11 @@ namespace MusicEvents.Controllers
             }
 
 
-            var artists = data.Artists.Select(a => a.ArtistName).ToList();
-
             var curr = new Event
             {
                 EventName = model.EventName,
                 Venue = model.Venue,
-                Description = model.Description == null ? "" : model.Description,
+                Description = model.Description,
                 ImgURL = model.ImgURL,
                 Time = model.Time,
                 CountryId = model.CountryId,
@@ -137,8 +135,7 @@ namespace MusicEvents.Controllers
             var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id));
             var ev = this.data.Events.Where(a => a.Id == id).First();
 
-            var country = countries.GetCountries().First(c => c.Id == ev.CountryId);
-            var city = data.Cities.First(c => c.Id == ev.CityId);
+           
             
 
             var res = new EventProfileModel
@@ -148,8 +145,8 @@ namespace MusicEvents.Controllers
                 Description = ev.Description,
                 Artists = artists,
                 Id = ev.Id,
-                CityName = city.CityName,
-                CountryName = country.CountryName,
+                CityName = ev.City.CityName,
+                CountryName = ev.Country.CountryName,
                 Time = ev.Time,
                 Venue = ev.Venue
             };
@@ -202,16 +199,16 @@ namespace MusicEvents.Controllers
             {
                 return BadRequest();
             }
-            //var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
+            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
 
 
             evData.EventName = e.EventName;
             evData.ImgURL = e.ImgURL;
             evData.CityId = e.CityId;
-            //evData.Artists = artists;
+            evData.Artists = artists;
             evData.Time = e.Time;
             evData.Venue = e.Venue;
-            evData.Description = e.Description==null?"":e.Description;
+            evData.Description = e.Description;
             evData.CountryId = e.CountryId;
 
             this.data.SaveChanges();

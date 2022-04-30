@@ -11,7 +11,7 @@
 
         public string ImgURL { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public string CountryName { get; set; }
 

@@ -99,8 +99,6 @@ namespace MusicEvents.Controllers
                                            query.CurrentPage,
                                            AllArtistsQueryModel.ArtistsPerPage,
                                            query.GenreId);
-
-
             
             query.Countries = countries.GetCountries();
             query.TotalArtists = artists.TotalArtists;
@@ -129,7 +127,7 @@ namespace MusicEvents.Controllers
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
             artists.Edit(a, id);
-            return RedirectToAction(nameof(All));
+            return RedirectToAction("Details","Artists",new { id});
         }
 
         public IActionResult Details(int artistid)

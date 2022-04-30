@@ -4,12 +4,14 @@ using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Organizers;
+using MusicEvents.Services.Organizers;
 
 namespace MusicEvents.Controllers
 {
     public class OrganizersController : Controller
     {
         private readonly MusicEventsDbContext data;
+        private readonly IOrganizerService organizers;
 
 
         public OrganizersController(MusicEventsDbContext data)
@@ -21,8 +23,6 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Create()
         {
-
-
             return View();
         }
 
@@ -30,11 +30,8 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Create(CreateOrganizerFormModel model)
         {
-            var userIsDealer = this.data
-            .Organizers
-            .Any(d => d.UserId == this.User.GetId());
 
-            if (userIsDealer)
+            if (organizers.IsOrganizer(User.GetId()))
             {
                 return BadRequest();
             }
@@ -55,7 +52,6 @@ namespace MusicEvents.Controllers
             this.data.Organizers.Add(organizer);
             this.data.SaveChanges();
             return RedirectToAction("All", "Events");
-
 
         }
 

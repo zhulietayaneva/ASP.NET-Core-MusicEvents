@@ -10,7 +10,7 @@ namespace MusicEvents.Data.Models
         [MaxLength(GenreNameMaxLenght)]
         public string GenreName { get; set; }
 
-        public ICollection<Song> Songs { get; set; } = new List<Song>();
-        public ICollection<Artist> Artists { get; set; } = new List<Artist>();
+        public virtual ICollection<Song> Songs { get; set; } = new List<Song>();
+        public virtual ICollection<Artist> Artists { get; set; } = new List<Artist>();
     }
 }

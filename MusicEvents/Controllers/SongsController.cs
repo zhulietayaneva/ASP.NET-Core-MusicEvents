@@ -4,6 +4,7 @@ using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Infrastructure;
 using MusicEvents.Models.Songs;
+using MusicEvents.Services.Organizers;
 
 namespace MusicEvents.Controllers
 {
@@ -11,6 +12,7 @@ namespace MusicEvents.Controllers
     {
 
         private readonly MusicEventsDbContext data;
+        private readonly IOrganizerService organizers;
 
         public SongsController(MusicEventsDbContext data)
         {
@@ -20,7 +22,7 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Add(int artistid)
         {
-            if (!this.UserIsOrganizer())
+            if (!organizers.IsOrganizer(User.GetId()))
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
@@ -37,25 +39,17 @@ namespace MusicEvents.Controllers
          
         [Authorize]
         [HttpPost]
-        public IActionResult Add(int artistid,AddSongFormModel model )
+        public IActionResult Add(int artistid, AddSongFormModel model )
         {
             var artists = data.Artists.ToList();
             var genres = data.Genres.ToList();
             model.Genres = genres;
             model.Artists = artists;
 
-            var userId = this.data
-             .Organizers
-             .Where(o => o.UserId == this.User.GetId())
-             .Select(o => o.Id)
-             .FirstOrDefault();
-
-
-            if (!this.UserIsOrganizer())
+            if (!organizers.IsOrganizer(User.GetId()))
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
-
             if (!this.data.Genres.Any(c => c.Id == model.GenreId))
             {
                 this.ModelState.AddModelError(nameof(model.GenreId), "Select a valid genre");
@@ -66,20 +60,17 @@ namespace MusicEvents.Controllers
                 this.ModelState.AddModelError(nameof(model.GenreId), "Select a valid artist");
 
             }
-
             if (!ModelState.IsValid)
             {
                 model.Genres = genres;
                 model.Artists = artists;
-                
-
                 var errors = ModelState.Values.SelectMany(v => v.Errors);
                 
                 return View(model);
 
             }
-            var artist = data.Artists.First(a=>a.Id==model.ArtistId);
 
+            var artist = data.Artists.First(a=>a.Id==model.ArtistId);
             var curr = new Song
             {
                 SongName = model.SongName,
@@ -105,10 +96,6 @@ namespace MusicEvents.Controllers
             return RedirectToAction("Details","Artists", new { artistid });
         }
 
-        private bool UserIsOrganizer()
-              => this.data //!
-              .Organizers
-              .Any(d => d.UserId ==
-              this.User.GetId());
+        
     }
 }

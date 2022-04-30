@@ -24,9 +24,7 @@ namespace MusicEvents.Services.Artists
         public ArtistsQueryServiceModel All(string searchTerm, int countryId, ArtistSorting sorting, int currentPage, int artistsPerPage, int genreId)
         {
             var artistsQuery = data.Artists.AsQueryable();
-            var countries = this.countries.GetCountries();
-
-
+            
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 artistsQuery =
@@ -78,15 +76,16 @@ namespace MusicEvents.Services.Artists
 
              })
              .ToList();
-            var totalArtists = artistsQuery.Count();
 
-            return new ArtistsQueryServiceModel { CurrentPage = currentPage, Artists = artists, TotalArtists = totalArtists, ArtistsPerPage = artistsPerPage };
+             var totalArtists = artistsQuery.Count();
+            
+             return new ArtistsQueryServiceModel { CurrentPage = currentPage, Artists = artists, TotalArtists = totalArtists, ArtistsPerPage = artistsPerPage };
         }
 
 
         public void Add(string artistName, string? biography, DateTime birthDate, int countryId, int genreId, string imageUrl)
         {
-
+            
             var curr = new Artist
             {
                 ArtistName = artistName,
