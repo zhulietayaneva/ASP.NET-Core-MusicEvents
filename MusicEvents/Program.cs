@@ -8,6 +8,7 @@ using MusicEvents.Services.Cities;
 using MusicEvents.Services.Countries;
 using MusicEvents.Services.Events;
 using MusicEvents.Services.Organizers;
+using MusicEvents.Services.Songs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddTransient<IArtistService, ArtistService>();
 builder.Services.AddTransient<ICountryService, CountryService>();
 builder.Services.AddTransient<ICityService, CityService>();
 builder.Services.AddTransient<IOrganizerService, OrganizerService>();
+builder.Services.AddTransient<ISongService, SongService>();
 
 builder.Services.AddMemoryCache();
 
