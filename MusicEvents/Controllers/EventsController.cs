@@ -33,13 +33,10 @@ namespace MusicEvents.Controllers
         [Authorize]
         public IActionResult Add()
         {
-
             if (!organizers.IsOrganizer(User.GetId()))
             {
                 return RedirectToAction(nameof(OrganizersController.Create), "Organizers");
             }
-
-
 
             var res = new AddEventFormModel
             {
@@ -57,10 +54,10 @@ namespace MusicEvents.Controllers
         public IActionResult Add(AddEventFormModel model)
         {
             var userId = this.data
-          .Organizers
-          .Where(o => o.UserId == this.User.GetId())
-          .Select(o => o.Id)
-          .FirstOrDefault();
+                             .Organizers
+                             .Where(o => o.UserId == this.User.GetId())
+                             .Select(o => o.Id)
+                             .FirstOrDefault();
 
             if (!organizers.IsOrganizer(User.GetId()))
             {
@@ -107,14 +104,10 @@ namespace MusicEvents.Controllers
 
             return RedirectToAction(nameof(All));
         }
-
        
         public IActionResult All([FromQuery] AllEventsQueryModel query)
-        {
-
+        { 
             var userId = User.Identity.Name==null ? null : User.GetId();
-            
-
             var events = this.events.All(query.SearchTerm,
                                          query.CountryId,
                                          query.CityId,
@@ -123,17 +116,14 @@ namespace MusicEvents.Controllers
                                          AllEventsQueryModel.EventsPerPage,
                                          userId);
 
-
             var cities = this.cities.GetCitties().Where(c => c.CountryId == query.CountryId);
             query.Countries = countries.GetCountries();
             query.Cities = cities.Count() == 0 ? new List<City>() : cities;
             query.TotalEvents = events.TotalEvents;
             query.Events = events.Events;
-
-
-
             return View(query);
         }
+
         [Authorize]
         public IActionResult Delete(int id)
         {
@@ -151,8 +141,7 @@ namespace MusicEvents.Controllers
 
             var country = countries.GetCountries().First(c => c.Id == ev.CountryId);
             var city = data.Cities.First(c => c.Id == ev.CityId);
-            //var artists = data.Artists.ToList();
-
+            
 
             var res = new EventProfileModel
             {
@@ -183,15 +172,14 @@ namespace MusicEvents.Controllers
             var eventForm = this.data.Events.Where(e => e.Id == id)
                             .Select(e => new AddEventFormModel
                             {
-                                EventName = e.EventName,
-                                ImgURL = e.ImgURL,
-                                CityId = e.CityId,
-                                Artists = artists,
-                                Time = e.Time,
-                                Venue = e.Venue,
-                                Description = e.Description,
-                                CountryId = e.CountryId,
-
+                               EventName = e.EventName,
+                               ImgURL = e.ImgURL,
+                               CityId = e.CityId,
+                               Artists = artists,
+                               Time = e.Time,
+                               Venue = e.Venue,
+                               Description = e.Description,
+                               CountryId = e.CountryId
 
                             }).FirstOrDefault();
 
@@ -225,7 +213,7 @@ namespace MusicEvents.Controllers
             //evData.Artists = artists;
             evData.Time = e.Time;
             evData.Venue = e.Venue;
-            evData.Description = e.Description;
+            evData.Description = e.Description==null?"":e.Description;
             evData.CountryId = e.CountryId;
 
             this.data.SaveChanges();
@@ -238,12 +226,12 @@ namespace MusicEvents.Controllers
         public IActionResult MyEvents([FromQuery] AllEventsQueryModel query)
         {
             var events = this.events.MyEvents(query.SearchTerm,
-                                         query.CountryId,
-                                         query.CityId,
-                                         query.SortingType,
-                                         query.CurrentPage,
-                                         AllEventsQueryModel.EventsPerPage,
-                                         User.GetId());
+                                              query.CountryId,
+                                              query.CityId,
+                                              query.SortingType,
+                                              query.CurrentPage,
+                                              AllEventsQueryModel.EventsPerPage,
+                                              User.GetId());
 
             var cities = this.cities.GetCitties().Where(c => c.CountryId == query.CountryId);
             query.Countries = countries.GetCountries();

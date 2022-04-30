@@ -79,7 +79,7 @@
 			<div class="card-body justify-content-center" style="padding-left: 20px; padding-top: 18px; font-size: 18px;">
 				<h5 class="card-title">@ev.EventName</h5>
 				<h6 class="card-title">@ev.Venue</h6>
-				<p class="card-text b">@ev.Description</p>
+				<p class="card-text b">@(string.IsNullOrEmpty(ev.Description)? "This event has no discription yet. Ask its organizer to add one.": @ev.Description)</p>
 				<p class="card-text"><small class="text-muted"><i class="fa-solid fa-calendar-days"></i> @ev.Time.ToString("dd.MM.yyyy hh:mm") - <i class="fa-solid fa-location-dot"></i> @ev.CityName, @ev.CountryName</small></p>
 				
 					<a asp-controller="Events" asp-action="Details" asp-route-id="@ev.Id" class="btn purple" style=" margin-right: 4px;">Check event</a>

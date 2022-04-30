@@ -25,7 +25,7 @@ namespace MusicEvents.Services
                                 cacheEntry => 
                                 {
                                     var countries = data.Countries.ToList();
-                                    var options = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(30));
+                                    var options = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(50));
                                     return cache.Set("GetCountriesCache", countries,options);
 
                            

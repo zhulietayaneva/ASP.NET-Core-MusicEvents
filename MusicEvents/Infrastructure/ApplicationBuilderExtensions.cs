@@ -8,7 +8,6 @@ namespace MusicEvents.Infrastructure
 {
     public static class ApplicationBuilderExtensions
     {
-
         public static IApplicationBuilder PrepareDatabase( this IApplicationBuilder app)
         {
             using var scopedServices = app.ApplicationServices.CreateScope();
@@ -115,7 +114,6 @@ namespace MusicEvents.Infrastructure
             //data.Cities.AddRange(cities);
             //data.SaveChanges();
         }
-
         private static void SeedGenres(MusicEventsDbContext data)
         {
             if (data.Genres.Any())
@@ -168,7 +166,6 @@ namespace MusicEvents.Infrastructure
             data.Artists.AddRange(artists);
             data.SaveChanges();
         }
-
         private static void SeedSongs(MusicEventsDbContext data) 
         {
             if (data.Songs.Any())

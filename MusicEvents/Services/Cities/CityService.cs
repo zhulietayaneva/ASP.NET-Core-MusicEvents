@@ -24,10 +24,8 @@ namespace MusicEvents.Services.Cities
                                  cacheEntry =>
                                  {
                                      var cities = data.Cities.ToList();
-                                     var options = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(30));
+                                     var options = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(50));
                                      return cache.Set("GetCitiesCache", cities, options);
-
-
                                  }
                                  );
 

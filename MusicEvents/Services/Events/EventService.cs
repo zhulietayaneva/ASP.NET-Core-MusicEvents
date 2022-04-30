@@ -17,7 +17,6 @@ namespace MusicEvents.Services.Events
             this.countries = countries;
             this.organizers = organizers;
         }
-
         public EventsQueryServiceModel All(string searchTerm,int countryId, int cityId,EventSorting sorting,int currentPage,int eventsPerPage,string? userId)
         {
             
@@ -84,8 +83,6 @@ namespace MusicEvents.Services.Events
             return new EventsQueryServiceModel { CurrentPage = currentPage, Events = events, TotalEvents = totalEvents, EventsPerPage=eventsPerPage};
             
         }
-
-
         public EventsQueryServiceModel MyEvents(string searchTerm, int countryId, int cityId, EventSorting sorting, int currentPage, int eventsPerPage, string userId)
         {
             var eventsQuery = data.Events.Where(e => e.OrganizerId == organizers.GetOrganizerId(userId)).AsQueryable();

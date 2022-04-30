@@ -20,7 +20,7 @@ namespace MusicEvents.Data.Models
         [Url]
         public string ImgURL { get; set; }
         
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public Country Country { get; set; }
         public int CountryId { get; set; }
