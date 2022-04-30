@@ -1,4 +1,5 @@
-﻿using MusicEvents.Models;
+﻿using MusicEvents.Data.Models;
+using MusicEvents.Models;
 using MusicEvents.Models.Artists;
 
 namespace MusicEvents.Services.Artists
@@ -11,8 +12,11 @@ namespace MusicEvents.Services.Artists
 
         public AddArtistFormModel Edit(int id);
 
-        public void Edit(AddArtistFormModel a, int id);
+        public void Edit(int id, int countryId, string artistName, string? bio, DateTime birthDate, int genreId, string ImgURL);
         public ArtistProfileModel Details(int artistid);
+        public AddArtistFormModel Add();
+        public IEnumerable<Artist> GetArtists();
+        public Artist? GetArtistById(int id);
 
     }
 }

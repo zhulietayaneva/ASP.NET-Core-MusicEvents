@@ -1,10 +1,11 @@
-﻿using MusicEvents.Controllers;
-using MusicEvents.Data;
+﻿using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Models;
 using MusicEvents.Models.Artists;
 using MusicEvents.Services.Countries;
-using MusicEvents.Services.Organizers;
+using MusicEvents.Services.Events;
+using MusicEvents.Services.Genres;
+using MusicEvents.Services.Songs;
 
 namespace MusicEvents.Services.Artists
 {
@@ -12,18 +13,23 @@ namespace MusicEvents.Services.Artists
     {
         private readonly MusicEventsDbContext data;
         private readonly ICountryService countries;
-        private readonly IOrganizerService organizers;
+        private readonly IGenreService genres;
+        private readonly ISongService songs;
+        private readonly IEventService events;
 
-        public ArtistService(MusicEventsDbContext data, ICountryService countries, IOrganizerService organizers)
+
+        public ArtistService(MusicEventsDbContext data, ICountryService countries, IGenreService genres, ISongService songs, IEventService events)
         {
             this.data = data;
             this.countries = countries;
-            this.organizers = organizers;
+            this.genres = genres;
+            this.songs = songs;
+            this.events = events;
         }
 
         public ArtistsQueryServiceModel All(string searchTerm, int countryId, ArtistSorting sorting, int currentPage, int artistsPerPage, int genreId)
         {
-            var artistsQuery = data.Artists.AsQueryable();
+            var artistsQuery = GetArtists().AsQueryable();
             
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -82,10 +88,17 @@ namespace MusicEvents.Services.Artists
              return new ArtistsQueryServiceModel { CurrentPage = currentPage, Artists = artists, TotalArtists = totalArtists, ArtistsPerPage = artistsPerPage };
         }
 
-
+        public AddArtistFormModel Add()
+        {
+            return new AddArtistFormModel
+            {
+                Countries = countries.GetCountries(),
+                Genres = genres.GetGenres().ToList(),
+                BirthDate = DateTime.UtcNow.Date
+            };
+        }
         public void Add(string artistName, string? biography, DateTime birthDate, int countryId, int genreId, string imageUrl)
         {
-            
             var curr = new Artist
             {
                 ArtistName = artistName,
@@ -100,10 +113,9 @@ namespace MusicEvents.Services.Artists
             this.data.SaveChanges();
 
         }
-
         public AddArtistFormModel Edit(int id)
         {
-            var artistForm = this.data.Artists.Where(a => a.Id == id)
+            var artistForm = GetArtists().Where(a => a.Id == id)
                         .Select(a => new AddArtistFormModel
                         {
                             ArtistName = a.ArtistName,
@@ -113,36 +125,31 @@ namespace MusicEvents.Services.Artists
                             GenreId = a.GenreId,
                             ImageURL = a.ImageURL
 
-
                         }).FirstOrDefault();
 
-            artistForm.Genres = data.Genres.ToList();
+            artistForm.Genres = genres.GetGenres().ToList();
             artistForm.Countries = countries.GetCountries();
 
             return artistForm;
         }
-
-        public void Edit(AddArtistFormModel a, int id)
+        public void Edit(int id,int countryId,string artistName,string? bio,DateTime birthDate,int genreId,string ImgURL)
         {
-            var artist = this.data.Artists.Find(id);
+            var artist = GetArtistById(id);
 
-            artist.CountryId = a.CountryId;
-            artist.ArtistName = a.ArtistName;
-            artist.Biography = a.Biography;
-            artist.BirthDate = a.BirthDate;
-            artist.GenreId = a.GenreId;
-            artist.ImageURL = a.ImageURL;
-
+            artist.CountryId = countryId;
+            artist.ArtistName = artistName;
+            artist.Biography = bio;
+            artist.BirthDate = birthDate;
+            artist.GenreId = genreId;
+            artist.ImageURL = ImgURL;
 
             this.data.SaveChanges();
         }
-
         public ArtistProfileModel Details(int artistid)
         {
-            var artist = this.data.Artists.Where(a => a.Id == artistid).First();
-            var songs = data.Songs.Where(s => s.Artists.Select(a => a.Id).Contains(artistid)).ToList();
-            artist.Genre = data.Genres.Where(g => g.Id == artist.GenreId).FirstOrDefault();
-            var eventsOfCurrArtist = data.Events.Where(e => e.Artists
+            var artist = GetArtists().Where(a => a.Id == artistid).First();
+            var songs = this.songs.GetSongs().Where(s => s.Artists.Select(a => a.Id).Contains(artistid)).ToList();
+            var eventsOfCurrArtist = events.GetEvents().Where(e => e.Artists
                                                             .Select(a => a.Id).Where(a => a == artist.Id).First()
                                                             == artist.Id).OrderBy(e => e.Time).ToList();
 
@@ -151,6 +158,14 @@ namespace MusicEvents.Services.Artists
             var res = new ArtistProfileModel { ArtistName = artist.ArtistName, ImageUrl = artist.ImageURL, Biography = artist.Biography, Events = artist.Events, GenreName = artist.Genre.GenreName, Id = artist.Id, Songs = songs, CountryName = country.CountryName };
 
             return res;
+        }
+        public IEnumerable<Artist> GetArtists()
+        {
+            return this.data.Artists.ToList();
+        }
+        public Artist? GetArtistById(int id)
+        {
+            return this.data.Artists.Find(id);
         }
     }
 }

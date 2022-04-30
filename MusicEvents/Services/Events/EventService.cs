@@ -2,6 +2,7 @@
 using MusicEvents.Data.Models;
 using MusicEvents.Models;
 using MusicEvents.Models.Events;
+using MusicEvents.Services.Artists;
 using MusicEvents.Services.Cities;
 using MusicEvents.Services.Countries;
 using MusicEvents.Services.Organizers;
@@ -14,18 +15,20 @@ namespace MusicEvents.Services.Events
         private readonly IOrganizerService organizers;
         private readonly ICountryService countries;
         private readonly ICityService cities;
+        private readonly IArtistService artists;
 
-        public EventService(MusicEventsDbContext data, ICountryService countries, IOrganizerService organizers, ICityService cities)
+        public EventService(MusicEventsDbContext data, ICountryService countries, IOrganizerService organizers, ICityService cities, IArtistService artists)
         {
             this.data = data;
             this.countries = countries;
             this.organizers = organizers;
             this.cities = cities;
+            this.artists = artists;
         }
         public EventsQueryServiceModel All(string searchTerm,int countryId, int cityId,EventSorting sorting,int currentPage,int eventsPerPage,string? userId)
         {
             
-                var eventsQuery = data.Events.AsQueryable();
+                var eventsQuery = GetEvents().AsQueryable();
                 
                 if (!string.IsNullOrWhiteSpace(searchTerm))
                 {
@@ -44,7 +47,6 @@ namespace MusicEvents.Services.Events
                 {
                     return new EventsQueryServiceModel { CurrentPage = currentPage, Events = new List<EventServiceModel>(), TotalEvents = 0, EventsPerPage = eventsPerPage };
                 }
-                
 
                 if (eventsQuery.Any(a => a.CityId == cityId))
                 {
@@ -90,7 +92,7 @@ namespace MusicEvents.Services.Events
         }
         public EventsQueryServiceModel MyEvents(string searchTerm, int countryId, int cityId, EventSorting sorting, int currentPage, int eventsPerPage, string userId)
         {
-            var eventsQuery = data.Events.Where(e => e.OrganizerId == organizers.GetOrganizerId(userId)).AsQueryable();
+            var eventsQuery = GetEvents().Where(e => e.OrganizerId == organizers.GetOrganizerId(userId)).AsQueryable();
             
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -109,7 +111,6 @@ namespace MusicEvents.Services.Events
             {
                 return new EventsQueryServiceModel { CurrentPage = currentPage, Events = new List<EventServiceModel>(), TotalEvents = 0, EventsPerPage = eventsPerPage };
             }
-
 
             if (eventsQuery.Any(a => a.CityId == cityId))
             {
@@ -130,7 +131,6 @@ namespace MusicEvents.Services.Events
             };
 
             var events = eventsQuery
-                
                 .Skip((currentPage - 1) * eventsPerPage)
                 .Take(eventsPerPage)
              .Select(e => new EventServiceModel
@@ -157,7 +157,7 @@ namespace MusicEvents.Services.Events
             return new AddEventFormModel
             {
                 Countries = countries.GetCountries(),
-                Artists = data.Artists.OrderBy(a => a.ArtistName).ToList(),
+                Artists = artists.GetArtists().OrderBy(a => a.ArtistName).ToList(),
                 Time = DateTime.UtcNow.Date
             };
         }
@@ -173,7 +173,7 @@ namespace MusicEvents.Services.Events
                 CountryId = countryId,
                 CityId = cityId,
                 OrganizerId = organizers.GetOrganizerId(userId),
-                Artists = new List<Artist>() { data.Artists.Where(a => a.Id == artistId).First() }
+                Artists = new List<Artist>() { artists.GetArtists().Where(a => a.Id == artistId).First() }
             };
 
 
@@ -182,14 +182,14 @@ namespace MusicEvents.Services.Events
         }
         public void Delete(int id)
         {
-            var ev = this.data.Events.Where(e => e.Id == id).FirstOrDefault();
+            var ev = GetEvents().Where(e => e.Id == id).FirstOrDefault();
             data.Remove(ev);
             data.SaveChanges();
         }
         public EventProfileModel Details(int id)
         {
-            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id));
-            var ev = this.data.Events.Where(a => a.Id == id).First();
+            var artists = this.artists.GetArtists().Where(e => e.Events.Select(e => e.Id).Contains(id));
+            var ev = GetEvents().Where(a => a.Id == id).First();
             return new EventProfileModel
             {
                 EventName = ev.EventName,
@@ -205,9 +205,9 @@ namespace MusicEvents.Services.Events
         }
         public AddEventFormModel Edit(int id)
         {
-            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
+            var artists = this.artists.GetArtists().Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
 
-            var eventForm = this.data.Events.Where(e => e.Id == id)
+            var eventForm = GetEvents().Where(e => e.Id == id)
                                             .Select(e => new AddEventFormModel
                                             {
                                                 EventName = e.EventName,
@@ -226,15 +226,14 @@ namespace MusicEvents.Services.Events
 
             return eventForm;
         }
-
-        public Event Edit(int id, string evName,string ImgUrl,int cityId,DateTime time,string venue,string? description, int countryId)
+        public Event? Edit(int id, string evName,string ImgUrl,int cityId,DateTime time,string venue,string? description, int countryId)
         {
-            var evData = this.data.Events.Find(id);
+            var evData = GetEvents().FirstOrDefault(e=>e.Id==id);
             if (evData==null)
             {
                 return null;
             }
-            var artists = data.Artists.Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
+            var artists = this.artists.GetArtists().Where(e => e.Events.Select(e => e.Id).Contains(id)).ToList();
 
 
             evData.EventName = evName;
@@ -248,6 +247,10 @@ namespace MusicEvents.Services.Events
 
             this.data.SaveChanges();
             return evData;
+        }
+        public IEnumerable<Event> GetEvents()
+        {
+            return this.data.Events.ToList();
         }
 
     }

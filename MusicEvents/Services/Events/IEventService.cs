@@ -20,7 +20,9 @@ namespace MusicEvents.Services.Events
 
         public AddEventFormModel Edit(int id);
 
-        public Event Edit(int id, string evName, string ImgUrl, int cityId, DateTime time, string venue, string? description, int countryId);
+        public Event? Edit(int id, string evName, string ImgUrl, int cityId, DateTime time, string venue, string? description, int countryId);
+
+        public IEnumerable<Event> GetEvents();
 
     }
 }

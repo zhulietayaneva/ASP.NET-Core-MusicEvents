@@ -1,7 +1,6 @@
 ﻿using MusicEvents.Data;
 using MusicEvents.Data.Models;
 using MusicEvents.Models.Songs;
-using MusicEvents.Services.Organizers;
 
 namespace MusicEvents.Services.Songs
 {
@@ -39,12 +38,15 @@ namespace MusicEvents.Services.Songs
             data.SaveChanges();
 
         }
-
         public void Delete(int id)
         {
             var song = this.data.Songs.Where(e => e.Id == id).FirstOrDefault();
             data.Remove(song);
             data.SaveChanges();
+        }
+        public IEnumerable<Song> GetSongs()
+        {
+            return data.Songs.ToList();
         }
     }
 }

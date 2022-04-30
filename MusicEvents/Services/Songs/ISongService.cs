@@ -1,4 +1,5 @@
-﻿using MusicEvents.Models.Songs;
+﻿using MusicEvents.Data.Models;
+using MusicEvents.Models.Songs;
 
 namespace MusicEvents.Services.Songs
 {
@@ -7,6 +8,7 @@ namespace MusicEvents.Services.Songs
         public AddSongFormModel Add(int artistid);
         public void Add(int artistid, string songName, int genreId, string songUrl);
         public void Delete(int id);
+        public IEnumerable<Song> GetSongs();
 
     }
 }
